@@ -1,0 +1,6 @@
+{
+  "name": "ระบบผ้าป่าเพื่อการศึกษา โรงเรียนร่มเกล้าพิทยาสรรค์",
+  "description": "ระบบผ้าป่าเพื่อการศึกษา พร้อมระบบจัดการเงินบริจาค จองของที่ระลึก จองโต๊ะ ตรวจสอบสลิป ข่าวสาร และโค้ด Code.gs สำหรับ Google Apps Script",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
