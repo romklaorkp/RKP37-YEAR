@@ -71,6 +71,15 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
 <div id="app" class="min-h-screen"></div>
 
 <script>
+/**
+ * ตั้งค่าเมื่อโฮสต์หน้านี้นอก Apps Script (เช่น GitHub Pages)
+ * ใส่ URL ของ Web App ที่ Deploy แล้ว เช่น 'https://script.google.com/macros/s/XXXX/exec'
+ * ปล่อยว่างไว้เมื่อเปิดผ่าน Web App ของ Apps Script โดยตรง
+ */
+const API_URL = '';
+const IN_GAS = !!(window.google && google.script && google.script.run);
+const MOCK = !IN_GAS && !API_URL;   // โหมดทดสอบด้วยข้อมูลจำลองในเบราว์เซอร์
+
 const $ = s => document.querySelector(s);
 const fm = n => Number(n || 0).toLocaleString('th-TH');
 const SZ = ['S', 'M', 'L', 'XL', '2XL'];
@@ -132,6 +141,23 @@ const rpc = (fn, ...a) => new Promise(res => {
       .withFailureHandler(e => {
         res({ ok: false, msg: (e && e.message) || 'เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ' });
       })[fn](...a);
+    return;
+  }
+
+  // เรียก Web App ผ่าน HTTP (กรณีโฮสต์บน GitHub Pages)
+  if (API_URL) {
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ fn, args: a }),
+      redirect: 'follow'
+    })
+      .then(r => r.json())
+      .then(r => {
+        if (r && r.code == 'AUTH') authLost();
+        res(r || { ok: false, msg: 'ไม่ได้รับข้อมูลจากเซิร์ฟเวอร์' });
+      })
+      .catch(e => res({ ok: false, msg: 'เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ' }));
     return;
   }
 
@@ -627,7 +653,7 @@ function draw() {
     if (A) adminInit();
     return;
   }
-  a.innerHTML = `<header class="sticky top-0 z-30 backdrop-blur" style="background:color-mix(in srgb,var(--bg) 85%,transparent);border-bottom:1px solid var(--bd)">
+  a.innerHTML = (MOCK ? '<div class="text-center text-xs py-1 text-white" style="background:#F57C00">⚠️ โหมดทดสอบ: ข้อมูลจำลองในเบราว์เซอร์นี้เท่านั้น (ยังไม่ได้เชื่อมต่อ Apps Script)</div>' : '') + `<header class="sticky top-0 z-30 backdrop-blur" style="background:color-mix(in srgb,var(--bg) 85%,transparent);border-bottom:1px solid var(--bd)">
     <div class="max-w-6xl mx-auto px-4 py-2 flex items-center gap-3">
       ${logo()}
       <div class="leading-tight">
@@ -952,7 +978,11 @@ const tState = t => {
 };
 
 function table(m) {
-  skel(m, () => {
+  skel(m, () => tableRender(m));
+}
+
+function tableRender(m) {
+  {
     m.innerHTML = `<div class="grid md:grid-cols-5 gap-4">
       <div class="card p-5 md:col-span-3">
         <h2 class="text-xl font-bold mb-3">🪑 เลือกโต๊ะจากผังห้องจัดเลี้ยง</h2>
@@ -982,12 +1012,12 @@ function table(m) {
         ` : '<div class="py-10 text-center" style="color:var(--mut)"><div class="text-3xl mb-2">👈</div>กรุณากดเลือกโต๊ะสีเขียวที่ว่างเพื่อจอง</div>'}
       </div>
     </div>`;
-  });
+  }
 }
 
 function pickT(t) {
   selT = t;
-  table($('#main'));
+  tableRender($('#main'));
 }
 
 const RC = () => {
@@ -1523,6 +1553,10 @@ async function review(id) {
       โทรศัพท์: <b>${x.phone}</b><br>
       จำนวนเงิน: <b style="color:#db0862">${fm(x.amount || x.total)} บาท</b><br>
       วันเวลา: ${new Date(x.at).toLocaleString('th-TH')}<br>
+      ${x.t ? 'โต๊ะ: <b>' + x.t + '</b> · ' + x.pax + ' คน' + (x.org ? ' · ' + x.org : '') + '<br>' : ''}
+      ${x.note ? 'หมายเหตุ: ' + x.note + '<br>' : ''}
+      ${x.method ? 'วิธีรับสินค้า: <b>' + x.method + '</b><br>' : ''}
+      ${Array.isArray(x.items) ? x.items.map(i => '• ' + i.p + (i.c && i.c != '-' ? ' สี' + i.c : '') + ' ไซซ์ ' + i.s + ' × ' + i.q).join('<br>') + '<br>' : ''}
       ${x.addr ? 'ที่อยู่จัดส่ง: ' + x.addr + ' (รวมค่าส่ง ' + x.ship + ' บาท)<br>' : ''}
       ${x.reason ? '<span style="color:#D32F2F">เหตุผลที่ไม่อนุมัติ: ' + x.reason + '</span><br>' : ''}
       ${sl ? '<div class="mt-2 text-center"><img src="' + sl + '" style="max-height:260px;margin:8px auto;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)"></div>' : '<i class="text-xs" style="color:var(--mut)">ไม่มีรูปสลิปแนบ</i>'}
