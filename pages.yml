@@ -18,7 +18,7 @@ jobs:
         env:
           APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
         run: |
-          test -n "$APPS_SCRIPT_URL" || { echo "ต้องตั้ง secret APPS_SCRIPT_URL (URL ของ Web App ที่ลงท้าย /exec)"; exit 1; }
+          test -n "$APPS_SCRIPT_URL"https://script.google.com/macros/s/AKfycbyPEn6pw5DZaAsHo8RgydfP7CMgXKjh-x2wCQBlBzjpys8pK3ABMj3OMLXzhgDIr_QMIw/exec"; exit 1; }
           mkdir _site
           python3 - <<'PY'
           import os
