@@ -76,7 +76,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
  * ใส่ URL ของ Web App ที่ Deploy แล้ว เช่น 'https://script.google.com/macros/s/XXXX/exec'
  * ปล่อยว่างไว้เมื่อเปิดผ่าน Web App ของ Apps Script โดยตรง
  */
-const API_URL = '';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyPEn6pw5DZaAsHo8RgydfP7CMgXKjh-x2wCQBlBzjpys8pK3ABMj3OMLXzhgDIr_QMIw/exec';
 const IN_GAS = !!(window.google && google.script && google.script.run);
 const MOCK = !IN_GAS && !API_URL;   // โหมดทดสอบด้วยข้อมูลจำลองในเบราว์เซอร์
 
