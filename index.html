@@ -78,8 +78,6 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
  */
 const API_URL = '';
 const IN_GAS = !!(window.google && google.script && google.script.run);
-const MOCK = !IN_GAS && !API_URL;   // โหมดทดสอบด้วยข้อมูลจำลองในเบราว์เซอร์
-
 const $ = s => document.querySelector(s);
 const fm = n => Number(n || 0).toLocaleString('th-TH');
 const SZ = ['S', 'M', 'L', 'XL', '2XL'];
@@ -127,8 +125,6 @@ const busy = async f => {
   }
 };
 
-/**
- * เรียก RPC ผ่าน google.script.run (และมีระบบ Mock จำลองอัตโนมัติหากทดสอบนอก Apps Script)
  */
 const rpc = (fn, ...a) => new Promise(res => {
   // หากรันใน Google Apps Script แท้
