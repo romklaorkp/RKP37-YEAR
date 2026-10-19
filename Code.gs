@@ -11,8 +11,7 @@
  * ฐานข้อมูล: Google Sheets (สร้างอัตโนมัติ)  |  ไฟล์รูป/สลิป: Google Drive
  * ตั้งค่าครั้งแรก: รันฟังก์ชัน setup() จาก Apps Script Editor หนึ่งครั้ง
  */
-const SHEET_ID = '1q-VeKXJV8grnblE3l6Tub9sj4wX4ngrcbHApmPLRqxU';
-const FOLDER_ID = '1gGrMYTNLYRQP0fBrdrRVDtcNSkLhwxSa';
+
 /* =========================================================
  * 1) ค่าคงที่
  * ======================================================= */
@@ -65,24 +64,13 @@ const SCHEMA = {
 /* =========================================================
  * 2) Entry points (Web App)
  * ======================================================= */
-// จุดรับคำสั่ง JSONP: ?action=ชื่อฟังก์ชัน&a=[อาร์กิวเมนต์ JSON]&callback=ชื่อ
 function doGet(e) {
   const p = (e && e.parameter) || {};
-  const cb = String(p.callback || 'callback').replace(/[^\w.$]/g, '');
-  let out;
-  try {
-    if (!p.action || p.action === 'ping') out = { ok: true, data: { status: 'ready', message: 'ระบบผ้าป่าเพื่อการศึกษาพร้อมใช้งาน (ทดสอบ: เพิ่ม ?action=getPublic ต่อท้าย URL)' } };
-    else {
-      if (API_NAMES.indexOf(p.action) < 0) throw new Error('ไม่พบคำสั่ง ' + p.action);
-      const FN = { getPublic, login, logout, submitDonation, submitOrder, submitTable, searchTxn, receipt, chunk,
-        adminList, verify, report, slipImage, saveProduct, deleteProduct, saveTables, saveNews, saveSchedule,
-        deleteRec, adminCfg, saveSettings, listUsers, saveUser, deleteUser };
-      out = { ok: true, data: FN[p.action].apply(null, JSON.parse(p.a || '[]')) };
-    }
-  } catch (err) {
-    out = { ok: false, error: String(err.message || err) };
-  }
-  return ContentService.createTextOutput(cb + '(' + JSON.stringify(out) + ');').setMimeType(ContentService.MimeType.JAVASCRIPT);
+  if (p.fn === 'getPublic') return json_(getPublic());
+  return HtmlService.createHtmlOutputFromFile('index')
+    .setTitle(APP.TITLE)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 /**
