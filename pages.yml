@@ -1,0 +1,41 @@
+name: Deploy GitHub Pages
+on:
+  push:
+    branches: [main]
+    paths: ['src/index.html']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency: pages
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build site (inject Web App URL)
+        env:
+          APPS_SCRIPT_URL: ${{ secrets.APPS_SCRIPT_URL }}
+        run: |
+          test -n "$APPS_SCRIPT_URL" || { echo "ต้องตั้ง secret APPS_SCRIPT_URL (URL ของ Web App ที่ลงท้าย /exec)"; exit 1; }
+          mkdir _site
+          python3 - <<'PY'
+          import os
+          s = open('src/index.html', encoding='utf-8').read()
+          old = "const API_URL = '';"
+          assert old in s
+          open('_site/index.html', 'w', encoding='utf-8').write(s.replace(old, "const API_URL = '%s';" % os.environ['APPS_SCRIPT_URL'].replace("'", ''), 1))
+          PY
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.d.outputs.page_url }}
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4

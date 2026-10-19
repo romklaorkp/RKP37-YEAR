@@ -1,0 +1,30 @@
+name: Deploy Apps Script
+on:
+  push:
+    branches: [main]
+    paths: ['src/**', 'scripts/**']
+  workflow_dispatch:
+concurrency: deploy-apps-script
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: node scripts/check.js
+      - run: npm i -g @google/clasp@2
+      - name: Configure clasp
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+          SCRIPT_ID: ${{ secrets.SCRIPT_ID }}
+        run: |
+          test -n "$CLASPRC_JSON" && test -n "$SCRIPT_ID" || { echo "ต้องตั้ง secrets CLASPRC_JSON และ SCRIPT_ID"; exit 1; }
+          printf '%s' "$CLASPRC_JSON" > ~/.clasprc.json
+          printf '{"scriptId":"%s","rootDir":"src"}' "$SCRIPT_ID" > .clasp.json
+      - run: clasp push -f
+      - name: Update existing deployment (optional)
+        env:
+          DEPLOYMENT_ID: ${{ secrets.DEPLOYMENT_ID }}
+        run: |
+          if [ -n "$DEPLOYMENT_ID" ]; then clasp deploy -i "$DEPLOYMENT_ID" -d "github ${GITHUB_SHA::7}"; fi

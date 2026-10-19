@@ -1,0 +1,19 @@
+{
+  "name": "rk-fundraiser",
+  "version": "1.0.0",
+  "description": "ระบบผ้าป่าเพื่อการศึกษา โรงเรียนร่มเกล้าพิทยาสรรค์ (Google Apps Script + Google Sheets)",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "check": "node scripts/check.js",
+    "login": "clasp login",
+    "create": "clasp create --type webapp --title \"RK Fundraiser\" --rootDir src",
+    "push": "npm run check && clasp push -f",
+    "deploy": "npm run push && clasp deploy",
+    "open": "clasp open"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.4.2"
+  },
+  "engines": { "node": ">=18" }
+}
