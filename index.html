@@ -825,7 +825,7 @@ function shop(m) {
           const rem = Object.values(p.sz).reduce((a, z) => a + (z.n - z.s), 0);
           return `<div class="card p-4 flex flex-col justify-between">
             <div>
-              <div class="h-10 rounded-xl grid place-items-center text-6xl mb-3 overflow-hidden shadow-inner" style="background:var(--bg)">
+              <div class="h-32 rounded-xl grid place-items-center text-6xl mb-3 overflow-hidden shadow-inner" style="background:var(--bg)">
                 ${p.img ? '<img src="' + p.img + '" class="w-full h-full object-cover">' : p.emoji}
               </div>
               <b class="text-base">${p.name} ${p.color != '-' ? 'สี' + p.color : ''}</b>
