@@ -653,8 +653,6 @@ function draw() {
     if (A) adminInit();
     return;
   }
-  a.innerHTML = (MOCK ? '<div class="text-center text-xs py-1 text-white" style="background:#F57C00">⚠️ โหมดทดสอบ: ข้อมูลจำลองในเบราว์เซอร์นี้เท่านั้น (ยังไม่ได้เชื่อมต่อ Apps Script)</div>' : '') + `<header class="sticky top-0 z-30 backdrop-blur" style="background:color-mix(in srgb,var(--bg) 85%,transparent);border-bottom:1px solid var(--bd)">
-    <div class="max-w-6xl mx-auto px-4 py-2 flex items-center gap-3">
       ${logo()}
       <div class="leading-tight">
         <b class="text-sm md:text-base">${S.cfg.name}</b>
