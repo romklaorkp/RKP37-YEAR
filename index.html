@@ -2,412 +2,1934 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ระบบผ้าป่าเพื่อการศึกษา โรงเรียนร่มเกล้าพิทยาสรรค์</title>
+<!-- ฟอนต์ Sarabun และสไตล์ชีตจำเป็น -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+<!-- Tailwind CSS, Chart.js, SweetAlert2 -->
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+
 <style>
-:root { --p: #db0862; --p2: #f51b70; --pu: #4a2c6d; --or: #ff8a65; --bd: #eee5f2; --mu: #7a6b88; }
-body { font-family: 'Sarabun', sans-serif; color: #2a1a3a; background: #faf7fb;
-  background-image: radial-gradient(800px 480px at 8% -10%, rgba(74,44,109,.12), transparent 60%), radial-gradient(700px 480px at 100% 0, rgba(219,8,98,.09), transparent 55%);
-  background-attachment: fixed; }
-.card { border-radius: 24px; border: 1px solid var(--bd); box-shadow: 0 4px 18px rgba(74,44,109,.06); }
-.btn { border-radius: 14px; font-weight: 600; }
-.btn-brand { background: linear-gradient(135deg, var(--p), var(--p2)); color: #fff; border: 0; }
-.btn-brand:hover { color: #fff; filter: brightness(1.08); }
-.form-control, .form-select { border-radius: 14px; background-color: #faf7fb; border-color: var(--bd); }
-.form-control:focus, .form-select:focus { border-color: var(--p2); box-shadow: 0 0 0 .2rem rgba(245,27,112,.15); }
-.ico { width: 44px; height: 44px; border-radius: 14px; display: inline-grid; place-items: center; color: #fff; font-size: 1.3rem; flex: none;
-  background: var(--g); position: relative; overflow: hidden;
-  box-shadow: 0 5px 0 rgba(0,0,0,.2), 0 10px 18px rgba(0,0,0,.2), inset 0 2px 2px rgba(255,255,255,.55); }
-.ico::before { content: ""; position: absolute; inset: 0 0 50% 0; background: linear-gradient(rgba(255,255,255,.45), transparent); }
-.ico.sm { width: 34px; height: 34px; font-size: 1rem; border-radius: 11px; }
-.sh { display: flex; align-items: center; gap: .9rem; margin: 2rem 0 .8rem; font-weight: 700; }
-.sh::after { content: ""; flex: 1; height: 3px; border-radius: 99px; background: linear-gradient(90deg, #4a2c6d, #db0862 55%, #ff8a65); }
-.hero { border-radius: 28px; color: #fff; background: linear-gradient(135deg, #4a2c6d, #db0862 60%, #ff8a65); }
-.hbtn { width: 100%; border: 0; border-radius: 20px; text-align: left; padding: 1rem; background: #fff; color: #2a1a3a; box-shadow: 0 8px 20px rgba(0,0,0,.15); transition: .2s; }
-.hbtn:hover { transform: translateY(-3px); }
-.skel { height: 90px; border-radius: 20px; background: linear-gradient(90deg, #eee5f2 25%, #fff 50%, #eee5f2 75%); background-size: 200% 100%; animation: sk 1.2s infinite; }
-@keyframes sk { to { background-position: -200% 0; } }
-#ld { display: none; position: fixed; inset: 0; z-index: 3000; background: #4a2c6dcc; place-items: center; }
-.nav-pills .nav-link { color: var(--mu); font-weight: 600; border-radius: 14px; white-space: nowrap; }
-.nav-pills .nav-link.active { background: linear-gradient(135deg, var(--p), var(--p2)); color: #fff; }
-.tl { border-left: 2px solid var(--bd); padding-left: 18px; }
-.tli { position: relative; padding-bottom: 14px; }
-.tli::before { content: ""; position: absolute; left: -25px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: linear-gradient(135deg, #db0862, #ff8a65); box-shadow: 0 0 0 4px #fff; }
-.tb { border: 0; border-radius: 18px; color: #fff; font-weight: 700; padding: 1rem .2rem; transition: .15s; }
-.tb:not(:disabled):hover { transform: scale(1.05); }
-.thead-g th { background: linear-gradient(90deg, #4a2c6d, #db0862); color: #fff; border: 0; white-space: nowrap; }
-.bottom-nav a { font-size: .7rem; text-decoration: none; color: var(--mu); text-align: center; }
-.bottom-nav a.on { color: var(--p); font-weight: 700; }
-.swal2-popup { border-radius: 28px !important; font-family: 'Sarabun', sans-serif !important; }
-.swal2-confirm, .swal2-deny, .swal2-cancel { border-radius: 14px !important; }
-.fade-in { animation: fi .35s; } @keyframes fi { from { opacity: 0; transform: translateY(8px); } }
+:root{--bg:#faf7fb;--card:#fff;--tx:#2a1a3a;--mut:#7a6b88;--bd:#eee5f2;--pri:#db0862;--pri2:#f51b70;--pur:#4A2C6D;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17101f;--card:#221832;--tx:#f3ecf8;--mut:#b3a3c4;--bd:#35294a;color-scheme:dark}}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{font-family:'Sarabun',sans-serif;background:var(--bg);background-image:radial-gradient(900px 520px at 8% -10%,rgba(74,44,109,.12),transparent 60%),radial-gradient(800px 520px at 100% 0%,rgba(219,8,98,.08),transparent 55%),radial-gradient(700px 500px at 50% 110%,rgba(255,138,101,.09),transparent 60%);background-attachment:fixed;color:var(--tx);margin:0}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(var(--bd) 1px,transparent 1px),linear-gradient(90deg,var(--bd) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 15%,transparent 70%);mask-image:radial-gradient(ellipse at 50% 0%,#000 15%,transparent 70%)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;box-shadow:0 4px 18px rgba(74,44,109,.06)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.6rem 1.1rem;border-radius:12px;font-weight:600;color:#fff;background:linear-gradient(135deg,var(--pri),var(--pri2));transition:.2s;cursor:pointer}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.07)}
+.btn.alt{background:var(--card);color:var(--tx);border:1px solid var(--bd)}
+.inp{width:100%;padding:.6rem .8rem;border:1px solid var(--bd);border-radius:12px;background:var(--bg);color:var(--tx)}
+.inp:focus{outline:2px solid var(--pri2);border-color:transparent}
+.lbl{font-size:.85rem;color:var(--mut);margin-bottom:.2rem;display:block}
+.badge{display:inline-block;padding:.1rem .6rem;border-radius:99px;font-size:.75rem;font-weight:600;color:#fff}
+.sk{background:linear-gradient(90deg,var(--bd) 25%,var(--card) 50%,var(--bd) 75%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:14px}
+@keyframes sk{to{background-position:-200% 0}}
+.spin{width:44px;height:44px;border:5px solid #fff4;border-top-color:#fff;border-radius:50%;animation:rot .8s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.tb{transition:.15s;cursor:pointer}.tb:hover{transform:scale(1.03)}
+.nav-a{display:flex;align-items:center;gap:.6rem;padding:.65rem .9rem;border-radius:12px;color:var(--mut);font-weight:500;cursor:pointer}
+.nav-a.on,.nav-a:hover{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff}
+.ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.4rem;color:#fff;position:relative;overflow:hidden;box-shadow:0 5px 0 rgba(0,0,0,.22),0 10px 18px rgba(0,0,0,.22),inset 0 2px 2px rgba(255,255,255,.55),inset 0 -4px 6px rgba(0,0,0,.2);text-shadow:0 3px 4px rgba(0,0,0,.35);transition:transform .2s}
+.ico::before{content:"";position:absolute;inset:0 0 50% 0;background:linear-gradient(rgba(255,255,255,.45),rgba(255,255,255,0));border-radius:14px 14px 40% 40%;pointer-events:none}
+.tb:hover .ico,.ico:hover{transform:translateY(-2px) rotate(-4deg) scale(1.06)}
+.tw{overflow-x:auto}
+.fade{animation:f .3s}@keyframes f{from{opacity:0;transform:translateY(6px)}}
+.inp{border-radius:16px}.card{border-radius:24px}
+.swal2-popup{border-radius:28px!important;padding:1.6rem!important;background:var(--card)!important;color:var(--tx)!important;font-family:'Sarabun',sans-serif!important;box-shadow:0 20px 60px rgba(74,44,109,.3)!important}
+.swal2-title,.swal2-html-container{color:var(--tx)!important}
+.swal2-input,.swal2-textarea,.swal2-file,.swal2-select{border-radius:16px!important;border:1px solid var(--bd)!important;background:var(--bg)!important;color:var(--tx)!important;box-shadow:none!important;margin:.4rem 0!important;width:100%!important;box-sizing:border-box!important}
+.swal2-input:focus,.swal2-textarea:focus{border-color:var(--pri2)!important;box-shadow:0 0 0 3px rgba(245,27,112,.2)!important}
+.swal2-confirm,.swal2-deny,.swal2-cancel{border-radius:14px!important;padding:.6rem 1.4rem!important;font-weight:600!important}
+.swal2-icon{border-radius:50%!important}
+.ni{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none;background:var(--g);box-shadow:0 4px 10px rgba(0,0,0,.18),inset 0 1px 1px rgba(255,255,255,.55),inset 0 -3px 5px rgba(0,0,0,.15);position:relative;overflow:hidden;transition:transform .25s}
+.ni::after{content:"";position:absolute;inset:0 0 55% 0;background:linear-gradient(rgba(255,255,255,.4),rgba(255,255,255,0));pointer-events:none}
+.nav-a:hover .ni{transform:scale(1.08) rotate(-4deg)}.nav-a.on .ni{box-shadow:0 0 0 2px rgba(255,255,255,.75),0 4px 10px rgba(0,0,0,.22)}
+.ni.lg{width:38px;height:38px;border-radius:12px}.nav-a{font-weight:600}.nav-a.on .ni.lg{box-shadow:0 0 0 2px rgba(255,255,255,.8),0 4px 10px rgba(0,0,0,.25)}
+.sh{display:flex;align-items:center;gap:.9rem;margin:2rem 0 .8rem;font-weight:700;font-size:1.05rem;color:var(--tx)}
+.sh::after{content:"";flex:1;height:3px;border-radius:99px;background:linear-gradient(90deg,#4A2C6D,#db0862 55%,#FF8A65)}
+.rv{opacity:0;transform:translateY(20px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}.rv.in{opacity:1;transform:none}
+.card{transition:box-shadow .3s,border-color .3s}.card:hover{box-shadow:0 10px 30px rgba(74,44,109,.12);border-color:rgba(219,8,98,.25)}
+.btn{position:relative;overflow:hidden}.btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);transition:left .6s}.btn:hover::after{left:130%}
+.tl{position:relative;padding-left:18px;border-left:2px solid var(--bd)}.tli{position:relative;padding-bottom:14px}
+.tli::before{content:"";position:absolute;left:-25px;top:4px;width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,#db0862,#FF8A65);box-shadow:0 0 0 4px var(--card)}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.btn::after{display:none}}
 </style>
 </head>
 <body>
-<div id="ld"><div class="spinner-border text-light" style="width:3rem;height:3rem"></div></div>
-<div id="app"><div class="container py-4"><div class="skel mb-3"></div><div class="skel" style="height:220px"></div></div></div>
+<!-- หน้าจอกำลังโหลด -->
+<div id="load" class="fixed inset-0 z-[9999] hidden place-items-center" style="background:#4A2C6Dcc">
+  <div class="spin"></div>
+</div>
+
+<!-- คอนเทนเนอร์หลัก -->
+<div id="app" class="min-h-screen"></div>
 
 <script>
-/* ================== ตั้งค่าการเชื่อมต่อ (JSONP → Code.gs) ================== */
-const API_URL = 'https://script.google.com/macros/s/AKfycbyPEn6pw5DZaAsHo8RgydfP7CMgXKjh-x2wCQBlBzjpys8pK3ABMj3OMLXzhgDIr_QMIw/exec';
-const SHIP = 40;
-
-/* ================== ตัวช่วยทั่วไป ================== */
 const $ = s => document.querySelector(s);
 const fm = n => Number(n || 0).toLocaleString('th-TH');
-const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const spin = v => $('#ld').style.display = v ? 'grid' : 'none';
-const toast = (t, i = 'success') => Swal.fire({ icon: i, title: t, confirmButtonColor: '#db0862', timer: 2000 });
-const ST = { ok: ['ยืนยันแล้ว', 'success'], wait: ['รอตรวจสอบ', 'warning'], no: ['ไม่ผ่าน', 'danger'] };
-const bd = s => `<span class="badge rounded-pill text-bg-${(ST[s] || ST.wait)[1]}">${(ST[s] || ST.wait)[0]}</span>`;
-const ico = (n, g, s = '') => `<span class="ico ${s}" style="--g:linear-gradient(145deg,${g})"><i class="bi bi-${n}"></i></span>`;
-const dt = t => new Date(t).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
-
-let D, V = 'home', TK = null, ROLE = '', AT = 'dash', cart = [], selT = null, LST = [], RR = [], UU = [], CC = {}, charts = [];
-let RP = { p: 'all', d: new Date().toISOString().slice(0, 10), t: 'all' };
-
-/* ---------- JSONP ---------- */
-let cbN = 0;
-function call(action, args = [], o = {}) {
-  return new Promise((resolve, reject) => {
-    if (!o.quiet) spin(1);
-    const cb = 'jp' + Date.now().toString(36) + (cbN++), s = document.createElement('script');
-    let done = false, tm;
-    const finish = () => { if (done) return false; done = true; clearTimeout(tm); delete window[cb]; s.remove(); if (!o.quiet) spin(0); return true; };
-    const fail = m => {
-      if (!finish()) return;
-      if (!o.silent) Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: m, confirmButtonColor: '#db0862' });
-      reject(new Error(m));
-    };
-    tm = setTimeout(() => fail('หมดเวลาเชื่อมต่อเซิร์ฟเวอร์'), 60000);
-    window[cb] = r => { if (r && r.ok) { if (finish()) resolve(r.data); } else fail((r && r.error) || 'ไม่ทราบสาเหตุ'); };
-    s.onerror = () => fail('เชื่อมต่อเซิร์ฟเวอร์ไม่ได้');
-    s.src = API_URL + '?action=' + action + '&a=' + encodeURIComponent(JSON.stringify(args)) + '&callback=' + cb + '&_=' + Date.now();
-    document.body.appendChild(s);
-  });
-}
-
-/* ---------- อัปโหลดรูป/สลิป: ย่อรูป → แบ่งชิ้นส่งผ่าน JSONP → ได้รหัสอ้างอิง ref ---------- */
-const shrink = (file, max, q) => new Promise((ok, no) => {
-  const r = new FileReader();
-  r.onload = () => {
-    const i = new Image();
-    i.onload = () => {
-      const k = Math.min(1, max / Math.max(i.width, i.height)), c = document.createElement('canvas');
-      c.width = Math.round(i.width * k); c.height = Math.round(i.height * k);
-      c.getContext('2d').drawImage(i, 0, 0, c.width, c.height);
-      ok(c.toDataURL('image/jpeg', q));
-    };
-    i.onerror = () => no(new Error('อ่านไฟล์รูปไม่ได้'));
-    i.src = r.result;
-  };
-  r.readAsDataURL(file);
+const SZ = ['S', 'M', 'L', 'XL', '2XL'];
+const EMPTY = () => ({
+  cfg: {
+    name: 'ระบบผ้าป่าเพื่อการศึกษา',
+    sub: 'ผ้าป่าสามัคคีเพื่อการศึกษา เพื่อพัฒนาคุณภาพการเรียนรู้',
+    logo: '',
+    banner: '',
+    target: 500000,
+    pp: '0812345678',
+    ppImg: '',
+    tgToken: '',
+    tgChat: '',
+    seat: 8,
+    price: 3000,
+    obj: 'เพื่อสมทบทุนจัดซื้ออุปกรณ์ห้องปฏิบัติการคอมพิวเตอร์และปรับปรุงภูมิทัศน์โรงเรียนร่มเกล้าพิทยาสรรค์',
+    rows: 3,
+    cols: 4
+  },
+  don: [],
+  ord: [],
+  tbl: [],
+  prods: [],
+  news: [],
+  sch: [],
+  tables: []
 });
-async function up(file, max = 800, q = .6) {
-  if (!file) return '';
-  const data = await shrink(file, max, q);
-  const b = data.split(',')[1].replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  const id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), SZ = 1800, N = Math.ceil(b.length / SZ);
-  spin(1);
+
+let S = EMPTY(), FULL = false, TK = '', LT = 0, LAST = null;
+let V = 'home', A = false, AT = 'dash', cart = [], charts = [], menu = false;
+
+try {
+  TK = sessionStorage.getItem('rk_t') || '';
+} catch(e) {}
+A = !!TK;
+
+const busy = async f => {
+  const el = $('#load');
+  if (el) el.style.display = 'grid';
   try {
-    let i = 0;
-    await Promise.all(Array.from({ length: 5 }, async () => {
-      while (i < N) {
-        const k = i++;
-        for (let t = 1; t <= 3; t++) {
-          try { await call('chunk', [id, k, b.slice(k * SZ, k * SZ + SZ)], { quiet: true, silent: true }); break; }
-          catch (e) { if (t === 3) throw new Error('อัปโหลดไฟล์ไม่สำเร็จ กรุณาลองใหม่'); }
-        }
-      }
-    }));
-  } catch (e) { spin(0); Swal.fire({ icon: 'error', title: e.message }); throw e; }
-  spin(0);
-  return 'ref:' + id + ':' + N;
-}
-const killCharts = () => { charts.forEach(c => c.destroy()); charts = []; };
-const badgeP = { id: 'bd', afterDatasetsDraw(c) { const x = c.ctx; c.data.datasets.forEach((d, i) => c.getDatasetMeta(i).data.forEach((e, j) => {
-  const v = d.data[j]; if (!v) return; const p = e.getCenterPoint(), t = fm(v);
-  x.save(); x.font = '600 11px Sarabun'; const w = x.measureText(t).width + 12;
-  x.fillStyle = '#4a2c6d'; x.beginPath(); x.roundRect(p.x - w / 2, p.y - 9, w, 18, 9); x.fill();
-  x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(t, p.x, p.y + 1); x.restore();
-})); } };
-const PAL = ['#db0862', '#4a2c6d', '#ff8a65', '#26a69a', '#ffca28', '#0288d1', '#aed581'];
-const mkChart = (id, type, labels, data, colors) => { const el = document.getElementById(id); if (!el) return;
-  charts.push(new Chart(el, { type, data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0, borderRadius: type === 'bar' ? 8 : 0 }] }, plugins: [badgeP],
-    options: { maintainAspectRatio: false, plugins: { legend: { display: type !== 'bar', position: 'bottom' } }, scales: type === 'bar' ? { y: { beginAtZero: true }, x: { grid: { display: false } } } : {} } })); };
-
-/* ---------- ฟอร์ม modal กลาง: F=[{k,l,h,t:'text|number|textarea|file|password'}] ---------- */
-async function form(title, F, v = {}) {
-  const r = await Swal.fire({
-    title, width: 'min(620px,94vw)', showCancelButton: true, confirmButtonText: '<i class="bi bi-save"></i> บันทึก', cancelButtonText: 'ยกเลิก', confirmButtonColor: '#db0862',
-    html: `<div class="text-start" style="max-height:60vh;overflow:auto">${F.map((f, i) => `<div class="mt-3"><label class="form-label fw-bold mb-0">${i + 1}) ${f.l}</label>${f.h ? `<div class="small text-muted">${f.h}</div>` : ''}${
-      f.t === 'textarea' ? `<textarea id="f_${f.k}" class="form-control mt-1" rows="4">${esc(v[f.k])}</textarea>`
-      : `<input id="f_${f.k}" type="${f.t || 'text'}" ${f.t === 'file' ? 'accept="image/*"' : ''} class="form-control mt-1" value="${f.t === 'file' ? '' : esc(v[f.k])}">`}</div>`).join('')}</div>`,
-    preConfirm: async () => { const o = {}; for (const f of F) { const e = document.getElementById('f_' + f.k); o[f.k] = f.t === 'file' ? await up(e.files[0], 900, .7) : e.value; } return o; }
-  });
-  return r.isConfirmed ? r.value : null;
-}
-const sure = async t => (await Swal.fire({ icon: 'warning', title: t, showCancelButton: true, confirmButtonColor: '#d32f2f', confirmButtonText: 'ยืนยัน', cancelButtonText: 'ยกเลิก' })).isConfirmed;
-function printHtml(h) { const f = document.createElement('iframe'); f.style.cssText = 'position:fixed;width:0;height:0;border:0'; document.body.appendChild(f); f.contentDocument.write(h); f.contentDocument.close(); setTimeout(() => f.contentWindow.print(), 500); }
-const F = (id, l, t = 'text', x = '', c = 'mb-2') => `<div class="${c}"><label class="form-label small text-muted mb-1">${l}</label><input id="${id}" type="${t}" class="form-control" ${x}></div>`;
-
-/* ================== เริ่มต้นระบบ ================== */
-async function load() { D = await call('getPublic', [], { quiet: true }); }
-async function boot() {
-  try { await load(); draw(); }
-  catch (e) { $('#app').innerHTML = `<div class="container py-5"><div class="card p-4 text-center"><h5>เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ</h5><p class="text-muted">${esc(e.message)}<br>ตรวจสอบว่าได้รัน setup() และ Deploy เป็น Web app (Access: Anyone) แล้ว</p><button class="btn btn-brand mx-auto" onclick="boot()">ลองใหม่</button></div></div>`; }
-}
-const go = v => { V = v; scrollTo(0, 0); draw(); };
-
-/* ================== หน้าสาธารณะ ================== */
-const NAV = [['home', 'house-heart-fill', 'หน้าแรก', '#4a2c6d,#8a5cc4'], ['donate', 'heart-fill', 'บริจาค', '#db0862,#ff5c9a'], ['shop', 'bag-heart-fill', 'ของที่ระลึก', '#f57c00,#ff8a65'], ['table', 'grid-3x3-gap-fill', 'จองโต๊ะ', '#26a69a,#0288d1'], ['search', 'search', 'ค้นหา', '#0288d1,#4a2c6d']];
-function draw() {
-  killCharts();
-  if (V === 'admin') return adm();
-  const c = D.cfg;
-  $('#app').innerHTML = `
-  <nav class="navbar sticky-top border-bottom" style="background:#faf7fbd9;backdrop-filter:blur(8px)"><div class="container gap-2">
-    <a class="navbar-brand d-flex align-items-center gap-2 m-0" role="button" onclick="go('home')">${c.Logo ? `<img src="${esc(c.Logo)}" width="40" height="40" class="rounded-3 object-fit-cover">` : ico('building-fill', '#4a2c6d,#8a5cc4', 'sm')}<b class="fs-6">${esc(c.SystemName)}</b></a>
-    <ul class="nav nav-pills ms-auto d-none d-md-flex">${NAV.map(n => `<li class="nav-item"><a role="button" class="nav-link ${V === n[0] ? 'active' : ''}" onclick="go('${n[0]}')"><i class="bi bi-${n[1]}"></i> ${n[2]}</a></li>`).join('')}</ul>
-    <button class="btn btn-outline-secondary btn-sm ms-auto ms-md-2" onclick="go('admin')"><i class="bi bi-key-fill"></i> Admin</button>
-  </div></nav>
-  <main class="container py-3 fade-in" id="m" style="padding-bottom:6rem!important"></main>
-  <nav class="bottom-nav d-md-none fixed-bottom bg-white border-top shadow rounded-top-4"><div class="d-flex justify-content-around align-items-end py-1">${NAV.map(n => `<a role="button" class="${V === n[0] ? 'on' : ''}" onclick="go('${n[0]}')">${ico(n[1], n[3], 'sm')}<div>${n[2]}</div></a>`).join('')}</div></nav>`;
-  ({ home, donate, shop, table, search })[V]($('#m'));
-}
-function home(m) {
-  const c = D.cfg, pct = Math.min(100, D.sum / (+c.Target || 1) * 100);
-  m.innerHTML = `
-  <section class="hero p-4 p-md-5" style="${c.Banner ? `background:linear-gradient(#4a2c6dcc,#db0862aa),url(${esc(c.Banner)}) center/cover` : ''}">
-    <div class="small">🙏 งานผ้าป่าเพื่อการศึกษา</div>
-    <h1 class="fw-bold">${esc(c.Subtitle)}</h1>
-    <p class="opacity-75 mb-0">${esc(c.SystemName)} · โรงเรียนร่มเกล้าพิทยาสรรค์</p>
-    <div class="row row-cols-2 row-cols-md-4 g-3 mt-2">${[['donate', 'heart-fill', 'ร่วมบริจาค', '#db0862,#ff5c9a'], ['shop', 'bag-heart-fill', 'จองของที่ระลึก', '#f57c00,#ff8a65'], ['table', 'grid-3x3-gap-fill', 'จองโต๊ะออนไลน์', '#26a69a,#0288d1'], ['search', 'search', 'ค้นหารายการ', '#0288d1,#4a2c6d']]
-      .map(b => `<div class="col"><button class="hbtn" onclick="go('${b[0]}')">${ico(b[1], b[3])}<div class="fw-bold mt-2">${b[2]}</div></button></div>`).join('')}</div>
-  </section>
-  <div class="sh"><i class="bi bi-bar-chart-fill"></i> ภาพรวมการระดมทุน</div>
-  <div class="row g-3"><div class="col-md-8"><div class="card p-4 h-100">
-    <div class="d-flex justify-content-between align-items-end"><div><div class="small text-muted">🎯 เป้าหมาย ${fm(c.Target)} บาท</div><div class="fs-2 fw-bold" style="color:var(--p)">${fm(D.sum)} บาท</div></div><span class="badge rounded-pill" style="background:var(--pu)">${pct.toFixed(1)}%</span></div>
-    <div class="progress mt-3" style="height:16px;border-radius:99px"><div class="progress-bar" style="width:${pct}%;background:linear-gradient(90deg,#ff8a65,#db0862)"></div></div>
-    <div class="row text-center g-2 mt-2">${[['people-fill', D.donors, 'ผู้ร่วมบริจาค', '#db0862,#ff5c9a'], ['grid-3x3-gap-fill', D.tableBooked + '/' + D.tables.length, 'โต๊ะที่จอง', '#26a69a,#0288d1'], ['bag-heart-fill', D.sold, 'ของที่ระลึก', '#f57c00,#ff8a65']]
-      .map(x => `<div class="col-4"><div class="rounded-4 p-2" style="background:#faf7fb">${ico(x[0], x[3], 'sm')}<div class="fw-bold">${x[1]}</div><div class="small text-muted">${x[2]}</div></div></div>`).join('')}</div>
-  </div></div><div class="col-md-4"><div class="card p-3 h-100"><div class="small text-muted">% การบริจาคจากเป้าหมาย</div><div style="height:190px"><canvas id="c1"></canvas></div></div></div></div>
-  <div class="sh"><i class="bi bi-calendar-event-fill"></i> กำหนดการ &amp; ผู้ร่วมบริจาคล่าสุด</div>
-  <div class="row g-3"><div class="col-md-6"><div class="card p-4 h-100">
-    <div class="rounded-4 p-3 mb-3 small" style="background:#faf7fb">🎯 ${esc(c.Objective)}</div>
-    <div class="tl">${D.schedule.map(x => `<div class="tli"><b>${esc(x.Title)}</b><div class="small" style="color:var(--p)">${esc(x.DateText)}</div><div class="small text-muted">${esc(x.Detail)}</div>${x.ImageURL ? `<img src="${esc(x.ImageURL)}" class="img-fluid rounded-4 mt-2" style="max-height:160px;width:100%;object-fit:cover">` : ''}</div>`).join('')}</div>
-  </div></div><div class="col-md-6"><div class="card p-4 h-100"><h6 class="fw-bold">💝 ผู้ร่วมบริจาคล่าสุด</h6>${D.recent.map(d => `<div class="d-flex justify-content-between align-items-center py-2 border-bottom"><div><b class="small">${esc(d.name)}</b><div class="small text-muted">${esc(d.type)} · ${dt(d.at)}</div></div><span class="badge rounded-pill text-bg-success">${fm(d.amt)} ฿</span></div>`).join('') || '<div class="text-muted small">ยังไม่มีรายการ</div>'}</div></div></div>
-  <div class="sh"><i class="bi bi-newspaper"></i> ข่าวประชาสัมพันธ์</div>
-  <div class="card p-4">${D.news.map(n => `<div class="py-2 border-bottom"><b>${esc(n.Title)}</b><div class="small text-muted">${esc(n.Detail)}</div>${n.ImageURL ? `<img src="${esc(n.ImageURL)}" class="img-fluid rounded-4 mt-2" style="max-height:220px">` : ''}</div>`).join('') || '<span class="text-muted">ยังไม่มีข่าว</span>'}</div>`;
-  mkChart('c1', 'doughnut', ['บริจาคแล้ว', 'คงเหลือ'], [Math.round(D.sum), Math.max(0, c.Target - D.sum)], ['#db0862', '#e5dcec']);
-}
-const pay = () => `<div class="rounded-4 p-3 text-center mb-3" style="background:#faf7fb"><div class="small text-muted mb-1">สแกน QR PromptPay</div>${D.cfg.QRImage ? `<img src="${esc(D.cfg.QRImage)}" class="img-fluid rounded-3" style="width:180px">` : '<i class="bi bi-qr-code fs-1"></i>'}${D.cfg.PromptPay ? `<div class="fw-semibold mt-1">PromptPay: ${esc(D.cfg.PromptPay)}</div>` : ''}</div>
-  <div class="mb-3"><label class="form-label small text-muted mb-1"><i class="bi bi-paperclip"></i> อัปโหลดสลิปการโอนเงิน</label><input id="slip" type="file" accept="image/*" class="form-control"></div>`;
-function donate(m) {
-  m.innerHTML = `<div class="row g-3"><div class="col-lg-7"><div class="card p-4"><h4 class="fw-bold mb-3"><i class="bi bi-heart-fill" style="color:var(--p)"></i> ร่วมบริจาคสมทบทุนเพื่อการศึกษา</h4>
-    <div class="row">${F('dn', 'ชื่อ–นามสกุล', 'text', '', 'col-sm-6 mb-2')}${F('dp', 'เบอร์โทรศัพท์', 'tel', '', 'col-sm-6 mb-2')}${F('de', 'อีเมล', 'email', '', 'col-sm-6 mb-2')}
-    <div class="col-sm-6 mb-2"><label class="form-label small text-muted mb-1">ประเภทผู้บริจาค</label><select id="dt" class="form-select">${['ศิษย์เก่า', 'ผู้ปกครอง', 'ครู/บุคลากร', 'นักเรียน', 'บุคคลทั่วไป', 'หน่วยงาน/องค์กร'].map(x => `<option>${x}</option>`).join('')}</select></div></div>
-    ${F('da', 'จำนวนเงินบริจาค (บาท)', 'number', 'min="1"')}
-    <div class="d-flex gap-2 flex-wrap mb-2">${[100, 500, 1000, 5000].map(v => `<button class="btn btn-outline-secondary btn-sm" onclick="da.value=${v}">${fm(v)}</button>`).join('')}</div>
-    ${F('dw', 'ข้อความอวยพร')}
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="dr"><label class="form-check-label" for="dr">ต้องการใบอนุโมทนา/หลักฐาน</label></div>
-    <div class="form-check"><input class="form-check-input" type="checkbox" id="ds" checked><label class="form-check-label" for="ds">แสดงชื่อผู้บริจาค</label></div>
-  </div></div><div class="col-lg-5"><div class="card p-4">${pay()}<button class="btn btn-brand w-100" onclick="subDon()"><i class="bi bi-check-circle-fill"></i> ส่งข้อมูลการบริจาค</button></div></div></div>`;
-}
-async function subDon() {
-  if (!dn.value || !dp.value || !+da.value || !slip.files[0]) return toast('กรอกข้อมูลและแนบสลิปให้ครบ', 'warning');
-  const ref = await up(slip.files[0]);
-  const r = await call('submitDonation', [{ name: dn.value, phone: dp.value, email: de.value, type: dt.value, amount: da.value, wish: dw.value, rc: dr.checked, show: ds.checked, slip: ref }]);
-  await Swal.fire({ icon: 'success', title: 'ส่งข้อมูลสำเร็จ', html: `เลขที่รายการ<br><b class="fs-4" style="color:#db0862">${r.id}</b><br>สถานะ 🟡 รอตรวจสอบ`, confirmButtonColor: '#db0862' });
-  await load(); go('home');
-}
-function shop(m) {
-  m.innerHTML = `<div class="row g-3"><div class="col-lg-8"><div class="row row-cols-1 row-cols-sm-2 g-3">${D.products.map(p => {
-    const rem = p.sizes.reduce((a, s) => a + s.total - s.res, 0);
-    return `<div class="col"><div class="card p-3 h-100"><div class="rounded-4 d-grid mb-2 overflow-hidden" style="height:130px;background:#faf7fb;place-items:center;font-size:3.5rem">${p.img ? `<img src="${esc(p.img)}" class="w-100 h-100 object-fit-cover">` : esc(p.emoji)}</div>
-    <b>${esc(p.name)} ${p.color !== '-' ? 'สี' + esc(p.color) : ''}</b><div class="fw-bold" style="color:var(--p)">${fm(p.price)} บาท</div>
-    ${rem <= 0 ? '<span class="badge text-bg-danger align-self-start mt-2">❌ สินค้าหมด</span>' : `<div class="d-flex gap-2 mt-2"><select id="sz${p.id}" class="form-select form-select-sm">${p.sizes.map(s => `<option value="${esc(s.size)}" ${s.total - s.res <= 0 ? 'disabled' : ''}>${esc(s.size)} (เหลือ ${s.total - s.res})</option>`).join('')}</select><input id="q${p.id}" type="number" min="1" value="1" class="form-control form-control-sm" style="width:5rem"></div><button class="btn btn-brand btn-sm mt-2" onclick="addCart('${p.id}')"><i class="bi bi-cart-plus"></i> ใส่ตะกร้า</button>`}</div></div>`;
-  }).join('')}</div></div>
-  <div class="col-lg-4"><div class="card p-4 position-sticky" style="top:80px"><h5 class="fw-bold"><i class="bi bi-cart3"></i> รายการจอง</h5><div id="cart" class="mb-2"></div>
-    ${F('on', 'ชื่อผู้จอง')}${F('op', 'เบอร์โทรศัพท์', 'tel')}
-    <div class="mb-2"><label class="form-label small text-muted mb-1">วิธีรับสินค้า</label><select id="om" class="form-select" onchange="cartDraw()"><option>รับที่โรงเรียน</option><option>รับวันงาน</option><option>จัดส่ง</option></select></div>
-    <div id="ab" class="mb-2" style="display:none"><label class="form-label small text-muted mb-1"><i class="bi bi-geo-alt-fill"></i> ที่อยู่จัดส่ง (+${SHIP} บาท)</label><textarea id="oa" class="form-control" rows="3" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์"></textarea></div>
-    ${pay()}<button class="btn btn-brand w-100" onclick="subOrd()"><i class="bi bi-check-circle-fill"></i> ยืนยันการจอง</button></div></div></div>`;
-  cartDraw();
-}
-function addCart(id) {
-  const s = $('#sz' + id).value, q = +$('#q' + id).value || 1, p = D.products.find(x => x.id == id), z = p.sizes.find(x => x.size == s);
-  if (q > z.total - z.res) return toast('สินค้าไม่เพียงพอ', 'warning');
-  cart.push({ id, size: s, qty: q }); cartDraw();
-}
-function cartDraw() {
-  const c = $('#cart'); if (!c) return;
-  const ship = $('#om').value === 'จัดส่ง'; $('#ab').style.display = ship ? 'block' : 'none';
-  const L = cart.map(i => ({ ...i, p: D.products.find(p => p.id == i.id) })), sub = L.reduce((a, i) => a + i.qty * i.p.price, 0), n = L.reduce((a, i) => a + i.qty, 0);
-  c.innerHTML = L.length ? L.map((i, k) => `<div class="d-flex align-items-center gap-2 rounded-4 p-2 mb-2" style="background:#faf7fb;border:1px solid var(--bd)"><span class="fs-3">${esc(i.p.emoji)}</span><div class="flex-grow-1"><b class="small">${esc(i.p.name)}</b><div><span class="badge" style="background:#4a2c6d">${esc(i.p.color)}</span> <span class="badge text-bg-info">ไซซ์ ${esc(i.size)}</span> <span class="badge text-bg-success">× ${i.qty}</span></div></div><div class="text-end"><b style="color:var(--p)">${fm(i.qty * i.p.price)}</b><br><a role="button" class="small text-danger" onclick="cart.splice(${k},1);cartDraw()"><i class="bi bi-trash3"></i> ลบ</a></div></div>`).join('')
-    + `<div class="rounded-4 p-3 small" style="background:#faf7fb;border:1px solid var(--bd)"><div class="d-flex justify-content-between"><span>ค่าสินค้า (${n} ชิ้น)</span><span>${fm(sub)}</span></div>${ship ? `<div class="d-flex justify-content-between"><span>🚚 ค่าจัดส่ง</span><span>+${SHIP}</span></div>` : ''}<div class="d-flex justify-content-between align-items-center border-top pt-2 mt-1"><b>ยอดรวมสุทธิ</b><b class="fs-5" style="color:var(--p)">${fm(sub + (ship ? SHIP : 0))} บาท</b></div></div>`
-    : '<div class="rounded-4 p-4 text-center small text-muted" style="border:2px dashed var(--bd)"><i class="bi bi-cart fs-2"></i><br>ยังไม่มีสินค้า</div>';
-}
-async function subOrd() {
-  if (!cart.length) return toast('กรุณาเลือกสินค้า', 'warning');
-  if (!on.value || !op.value || !slip.files[0]) return toast('กรอกข้อมูลและแนบสลิปให้ครบ', 'warning');
-  if (om.value === 'จัดส่ง' && !oa.value.trim()) return toast('กรุณากรอกที่อยู่จัดส่ง', 'warning');
-  const ref = await up(slip.files[0]);
-  const r = await call('submitOrder', [{ name: on.value, phone: op.value, method: om.value, addr: oa.value, items: cart, slip: ref }]);
-  cart = [];
-  await Swal.fire({ icon: 'success', title: 'จองสำเร็จ', html: `เลขที่ <b style="color:#db0862">${r.id}</b><br>ยอด ${fm(r.total)} บาท`, confirmButtonColor: '#db0862' });
-  await load(); go('home');
-}
-function table(m) {
-  const cols = D.cfg.TableCols || 4, sel = D.tables.find(t => t.id === selT);
-  m.innerHTML = `<div class="row g-3"><div class="col-lg-7"><div class="card p-4"><h4 class="fw-bold mb-3"><i class="bi bi-grid-3x3-gap-fill"></i> เลือกโต๊ะจากผัง</h4>
-    <div class="text-center py-2 rounded-4 text-white fw-bold mb-3" style="background:#4a2c6d">🎤 เวที</div>
-    <div class="d-grid gap-2" style="grid-template-columns:repeat(${cols},minmax(0,1fr))">${D.tables.map(t => {
-      const c = { free: '#26a69a', wait: '#fbc02d', ok: '#ef5350' }[t.state];
-      return `<button class="tb" ${t.state !== 'free' ? 'disabled' : ''} onclick="selT='${t.id}';table($('#m'))" style="background:${c};opacity:${t.state === 'free' ? 1 : .7};${selT === t.id ? 'outline:4px solid #4a2c6d' : ''}">${t.id}<div style="font-size:10px;font-weight:400">${{ free: 'ว่าง', wait: 'รอชำระ', ok: 'จองแล้ว' }[t.state]}</div></button>`;
-    }).join('')}</div>
-    <div class="text-center small text-muted border rounded-4 py-2 mt-3">🚪 ทางเข้า</div></div></div>
-  <div class="col-lg-5"><div class="card p-4">${sel ? `<h5 class="fw-bold">โต๊ะ ${sel.id} · ${fm(sel.price)} บาท · ${sel.seats} ที่นั่ง</h5>${F('tn', 'ชื่อผู้จอง')}${F('to', 'หน่วยงาน/บริษัท/กลุ่ม')}${F('tp', 'เบอร์โทรศัพท์', 'tel')}${F('tx', 'จำนวนผู้เข้าร่วม', 'number', `value="${sel.seats}"`)}${F('tm', 'ข้อความเพิ่มเติม')}${pay()}<button class="btn btn-brand w-100" onclick="subT()"><i class="bi bi-check-circle-fill"></i> ยืนยันการจองโต๊ะ</button>` : '<p class="text-muted mb-0">👈 กดเลือกโต๊ะสีเขียวที่ว่าง</p>'}</div></div></div>`;
-}
-async function subT() {
-  if (!tn.value || !tp.value || !slip.files[0]) return toast('กรอกข้อมูลและแนบสลิปให้ครบ', 'warning');
-  const ref = await up(slip.files[0]);
-  const r = await call('submitTable', [{ table: selT, name: tn.value, org: to.value, phone: tp.value, pax: tx.value, note: tm.value, slip: ref }]);
-  selT = null;
-  await Swal.fire({ icon: 'success', title: 'จองโต๊ะสำเร็จ', html: `เลขที่ <b style="color:#db0862">${r.id}</b>`, confirmButtonColor: '#db0862' });
-  await load(); go('home');
-}
-function search(m) {
-  m.innerHTML = `<div class="card p-4 mx-auto" style="max-width:560px"><h4 class="fw-bold mb-3"><i class="bi bi-search"></i> ค้นหารายการ</h4>${F('sid', 'เลขที่รายการ เช่น DON-2569-000001')}${F('sph', 'เบอร์โทรศัพท์', 'tel')}<button class="btn btn-brand" onclick="doS()">ค้นหา</button><div id="sr" class="mt-3"></div></div>`;
-}
-async function doS() {
-  const r = await call('searchTxn', [sid.value, sph.value]);
-  $('#sr').innerHTML = r ? `<div class="rounded-4 p-3" style="background:#faf7fb"><b>${esc(r.type)}${r.table ? ' ' + esc(r.table) : ''}</b><div>${esc(r.id)} · ${fm(r.amt)} บาท</div><div class="small">👤 ผู้ทำรายการ: <b>${esc(r.who)}</b></div>
-    ${r.items.length ? `<div class="small">🛍️ ${r.items.map(i => esc(i.ProductName) + ' ' + esc(i.Size) + '×' + i.Qty).join(', ')}</div>` : ''}${r.addr ? `<div class="small">📍 ${esc(r.addr)}</div>` : ''}
-    <div class="mt-1">${bd(r.status)} ${r.reason ? esc(r.reason) : ''}</div>${r.status === 'ok' && r.type === 'บริจาค' ? `<button class="btn btn-brand mt-3" onclick="rc('${esc(r.id)}')"><i class="bi bi-file-earmark-pdf"></i> ดาวน์โหลดใบรับเงิน PDF</button>` : ''}</div>`
-    : '<div class="text-center text-danger">ไม่พบรายการ</div>';
-}
-async function rc(id) { const u = await call('receipt', [id, sph.value]); window.open(u, '_blank'); }
-
-/* ================== Admin ================== */
-const TABS = [['dash', 'speedometer2', 'แดชบอร์ด'], ['pend', 'receipt', 'ตรวจสอบรายการ'], ['prod', 'bag-heart', 'สินค้า & สต็อก', ['Super', 'Merchandise']], ['tbl', 'grid-3x3-gap', 'โต๊ะ', ['Super', 'Event']],
-  ['cnt', 'newspaper', 'ข่าว & กำหนดการ', ['Super', 'Event']], ['rpt', 'file-earmark-bar-graph', 'รายงาน'], ['usr', 'people', 'ผู้ดูแล', ['Super']], ['set', 'gear', 'ตั้งค่า', ['Super']]];
-async function adm() {
-  if (!TK) {
-    $('#app').innerHTML = `<div class="min-vh-100 d-grid p-3" style="place-items:center;background:linear-gradient(135deg,#4a2c6d,#db0862)"><div class="card p-4 w-100 text-center" style="max-width:380px">${ico('key-fill', '#4a2c6d,#db0862').replace('class="ico "', 'class="ico mx-auto "')}<h4 class="fw-bold mt-3">เข้าสู่ระบบ Admin</h4>${F('lu', 'ชื่อผู้ใช้', 'text', 'value="admin"')}${F('lp', 'รหัสผ่าน', 'password')}<button class="btn btn-brand w-100 mb-2" onclick="login()"><i class="bi bi-unlock-fill"></i> เข้าสู่ระบบ</button><button class="btn btn-outline-secondary w-100" onclick="go('home')">← กลับหน้าแรก</button></div></div>`;
-    return;
-  }
-  killCharts();
-  $('#app').innerHTML = `<div class="container py-3"><div class="d-flex align-items-center gap-2 mb-3 flex-wrap"><b class="fs-5"><i class="bi bi-building-fill"></i> ${esc(D.cfg.SystemName)}</b><span class="badge" style="background:var(--pu)">${esc(ROLE)}</span><button class="btn btn-outline-secondary btn-sm ms-auto" onclick="go('home')"><i class="bi bi-house"></i> หน้าเว็บ</button><button class="btn btn-brand btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right"></i> ออก</button></div>
-  <div class="card p-2 mb-3"><ul class="nav nav-pills flex-nowrap overflow-auto">${TABS.filter(t => !t[3] || t[3].includes(ROLE)).map(t => `<li class="nav-item"><a role="button" class="nav-link ${AT === t[0] ? 'active' : ''}" onclick="AT='${t[0]}';adm()"><i class="bi bi-${t[1]}"></i> ${t[2]}</a></li>`).join('')}</ul></div><div id="am" class="fade-in"></div></div>`;
-  await TF[AT]($('#am'));
-}
-async function login() {
-  const r = await call('login', [lu.value, lp.value]);
-  if (!r.ok) return toast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
-  TK = r.token; ROLE = r.role; AT = 'dash'; adm();
-}
-async function logout() { if (!(await sure('ออกจากระบบ?'))) return; try { await call('logout', [TK]); } catch (e) {} TK = null; go('home'); }
-const done = async () => { toast('บันทึกแล้ว'); await load(); adm(); };
-const sbox = (c, l, v, g) => `<div class="col-6 col-lg-3"><div class="card p-3 d-flex flex-row align-items-center gap-3">${ico(c, g)}<div><div class="small text-muted">${l}</div><b class="fs-5">${v}</b></div></div></div>`;
-const TF = {
-  async dash(m) {
-    const R = await call('adminList', [TK]), ok = R.filter(r => r.st === 'ok'), don = ok.filter(r => r.k === 'บริจาค');
-    const byDay = {}, byType = {}, byKind = {};
-    don.forEach(r => { const k = dt(r.at); byDay[k] = (byDay[k] || 0) + r.amt; byType[r.det] = (byType[r.det] || 0) + 1; });
-    ok.forEach(r => byKind[r.k] = (byKind[r.k] || 0) + r.amt);
-    m.innerHTML = `<div class="row g-3">${sbox('cash-coin', 'เงินบริจาค', fm(don.reduce((a, r) => a + r.amt, 0)) + ' บาท', '#db0862,#ff5c9a')}${sbox('grid-3x3-gap-fill', 'โต๊ะที่จอง', D.tableBooked + ' / ' + D.tables.length, '#26a69a,#0288d1')}${sbox('bag-heart-fill', 'ของที่ระลึก', D.sold + ' ชิ้น', '#f57c00,#ff8a65')}${sbox('hourglass-split', 'รอตรวจสอบ', R.filter(r => r.st === 'wait').length + ' รายการ', '#4a2c6d,#8a5cc4')}</div>
-    <div class="row g-3 mt-1">${[['ยอดบริจาครายวัน', 'a1'], ['ผู้บริจาคแยกตามประเภท', 'a2'], ['รายได้แยกตามหมวด', 'a3']].map(c => `<div class="col-lg-${c[1] === 'a1' ? 6 : 3}"><div class="card p-3"><b>${c[0]}</b><div style="height:240px"><canvas id="${c[1]}"></canvas></div></div></div>`).join('')}</div>`;
-    mkChart('a1', 'bar', Object.keys(byDay), Object.values(byDay), '#db0862'); mkChart('a2', 'doughnut', Object.keys(byType), Object.values(byType), PAL); mkChart('a3', 'bar', Object.keys(byKind), Object.values(byKind), ['#db0862', '#ff8a65', '#26a69a']);
-  },
-  async pend(m) {
-    LST = await call('adminList', [TK]);
-    m.innerHTML = `<div class="card p-3"><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead class="thead-g"><tr><th>เลขที่</th><th>ประเภท</th><th>ผู้ทำรายการ</th><th class="text-end">จำนวน</th><th>สถานะ</th><th></th></tr></thead><tbody>${LST.map((r, i) => `<tr><td>${esc(r.id)}</td><td>${esc(r.k)}</td><td>${esc(r.who)}</td><td class="text-end">${fm(r.amt)}</td><td>${bd(r.st)}</td><td><button class="btn btn-brand btn-sm" onclick="review(${i})">ดู</button></td></tr>`).join('') || '<tr><td colspan="6" class="text-center text-muted py-4">ไม่มีรายการ</td></tr>'}</tbody></table></div></div>`;
-  },
-  async prod(m) {
-    m.innerHTML = `<div class="d-flex justify-content-between mb-3"><h4 class="fw-bold">สินค้า &amp; สต็อก</h4><button class="btn btn-brand" onclick="editP()"><i class="bi bi-plus-lg"></i> เพิ่มสินค้า</button></div><div class="card p-3"><div class="table-responsive"><table class="table align-middle mb-0"><thead class="thead-g"><tr><th>สินค้า</th><th>ราคา</th><th>ไซซ์ (จองแล้ว/ทั้งหมด)</th><th></th></tr></thead><tbody>${D.products.map(p => `<tr><td>${p.img ? `<img src="${esc(p.img)}" width="36" height="36" class="rounded-3 me-1 object-fit-cover">` : esc(p.emoji)} ${esc(p.name)} ${esc(p.color)}</td><td>${fm(p.price)}</td><td>${p.sizes.map(s => `<span class="badge text-bg-${s.total - s.res <= 0 ? 'danger' : 'success'}">${esc(s.size)} ${s.res}/${s.total}</span>`).join(' ')}</td><td class="text-nowrap"><button class="btn btn-outline-secondary btn-sm" onclick="editP('${p.id}')"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger btn-sm" onclick="delP('${p.id}')"><i class="bi bi-trash3"></i></button></td></tr>`).join('')}</tbody></table></div></div>`;
-  },
-  async tbl(m) {
-    const c = D.cfg;
-    m.innerHTML = `<div class="row g-3"><div class="col-lg-4"><div class="card p-4"><h5 class="fw-bold">🪑 ตั้งค่าโต๊ะ &amp; ผู้เข้าร่วม</h5><div class="row">${F('trw', 'จำนวนแถว', 'number', `min="1" max="10" value="${c.TableRows || 3}"`, 'col-6 mb-2')}${F('tcl', 'จำนวนคอลัมน์', 'number', `min="1" max="10" value="${c.TableCols || 4}"`, 'col-6 mb-2')}${F('tpr', 'ราคาต่อโต๊ะ', 'number', `value="${c.TablePrice || 3000}"`, 'col-6 mb-2')}${F('tst', 'ที่นั่งต่อโต๊ะ', 'number', `min="1" max="20" value="${c.TableSeats || 8}"`, 'col-6 mb-2')}</div><div class="rounded-4 p-2 small mb-2" style="background:#faf7fb">รวม <b id="tt"></b> โต๊ะ · รองรับ <b id="tp2"></b> คน</div><button class="btn btn-brand w-100" onclick="saveT()"><i class="bi bi-save"></i> บันทึก (สร้างผังโต๊ะใหม่)</button></div></div>
-    <div class="col-lg-8"><div class="card p-4"><div class="d-flex flex-wrap gap-2 align-items-center"><b>ตัวอย่างผังที่นั่ง</b><span class="badge text-bg-success">ว่าง</span><span class="badge text-bg-warning">รอชำระ</span><span class="badge text-bg-danger">จองแล้ว</span></div><div id="pv" class="mt-3 overflow-auto"></div></div></div></div>`;
-    ['trw', 'tcl', 'tst'].forEach(i => $('#' + i).oninput = seatPv); seatPv();
-  },
-  async cnt(m) {
-    m.innerHTML = `<div class="row g-3">${[['📰 ข่าวประชาสัมพันธ์', 'News', D.news, 'NewsID', 'Title', 'Detail'], ['📅 กำหนดการ & วัตถุประสงค์', 'Schedule', D.schedule, 'ScheduleID', 'Title', 'DateText']].map(s => `<div class="col-lg-6"><div class="d-flex justify-content-between mb-2"><b>${s[0]}</b><button class="btn btn-brand btn-sm" onclick="editC('${s[1]}')"><i class="bi bi-plus-lg"></i> เพิ่ม</button></div>${s[2].map(x => `<div class="card p-2 mb-2 flex-row align-items-center gap-2">${x.ImageURL ? `<img src="${esc(x.ImageURL)}" width="64" height="64" class="rounded-3 object-fit-cover">` : ico('image', '#ff8a65,#db0862')}<div class="flex-grow-1 min-w-0"><b>${esc(x[s[4]])}</b><div class="small text-muted text-truncate">${esc(x[s[5]])}</div></div><button class="btn btn-outline-secondary btn-sm" onclick="editC('${s[1]}','${x[s[3]]}')"><i class="bi bi-pencil"></i></button><button class="btn btn-danger btn-sm" onclick="delC('${s[1]}','${x[s[3]]}')"><i class="bi bi-trash3"></i></button></div>`).join('')}</div>`).join('')}</div>`;
-  },
-  async rpt(m) {
-    RR = await call('report', [TK, RP.p, RP.d, RP.t]);
-    const sum = s => RR.filter(r => r.st === s).reduce((a, r) => a + r.amt, 0), KC = { 'บริจาค': '#db0862', 'สินค้า': '#ff8a65', 'โต๊ะ': '#26a69a' };
-    m.innerHTML = `<div class="card p-3 mb-3"><div class="d-flex flex-wrap gap-2 align-items-center">${[['all', 'ทั้งหมด'], ['day', 'รายวัน'], ['week', 'รายสัปดาห์'], ['month', 'รายเดือน']].map(a => `<button class="btn btn-sm ${RP.p === a[0] ? 'btn-brand' : 'btn-outline-secondary'}" onclick="RP.p='${a[0]}';adm()">${a[1]}</button>`).join('')}${RP.p !== 'all' ? `<input type="date" class="form-control form-control-sm w-auto" value="${RP.d}" onchange="RP.d=this.value;adm()">` : ''}</div><div class="d-flex gap-2 mt-2">${['all', 'บริจาค', 'สินค้า', 'โต๊ะ'].map(k => `<span role="button" class="badge rounded-pill px-3 py-2" style="background:${KC[k] || '#4a2c6d'};opacity:${RP.t === k ? 1 : .4}" onclick="RP.t='${k}';adm()">${k === 'all' ? 'ทุกประเภท' : k}</span>`).join('')}</div></div>
-    <div class="row g-3 mb-3">${[['รายการ', RR.length, '#4a2c6d,#8a5cc4'], ['ยืนยันแล้ว', fm(sum('ok')) + ' บาท', '#26a69a,#aed581'], ['รอตรวจสอบ', fm(sum('wait')) + ' บาท', '#f57c00,#ffca28'], ['ไม่ผ่าน', RR.filter(r => r.st === 'no').length, '#d32f2f,#ff8a65']].map(c => `<div class="col-6 col-lg-3"><div class="rounded-4 p-3 text-white" style="background:linear-gradient(135deg,${c[2]})"><div class="small">${c[0]}</div><b class="fs-5">${c[1]}</b></div></div>`).join('')}</div>
-    <div class="card p-3"><div class="table-responsive"><table class="table table-striped align-middle mb-0"><thead class="thead-g"><tr><th>วันที่</th><th>เลขที่</th><th>ประเภท</th><th>ผู้ทำรายการ</th><th>รายละเอียด</th><th class="text-end">จำนวนเงิน</th><th>สถานะ</th></tr></thead><tbody>${RR.map(r => `<tr><td class="text-nowrap">${dt(r.at)}</td><td>${esc(r.id)}</td><td><span class="badge" style="background:${KC[r.k]}">${r.k}</span></td><td>${esc(r.who)}</td><td class="text-muted small">${esc(r.det)}</td><td class="text-end fw-semibold">${fm(r.amt)}</td><td>${bd(r.st)}</td></tr>`).join('') || '<tr><td colspan="7" class="text-center text-muted py-4">ไม่มีข้อมูลในช่วงที่เลือก</td></tr>'}</tbody><tfoot><tr><td colspan="5" class="text-end fw-bold">รวมที่ยืนยันแล้ว</td><td class="text-end fw-bold" style="color:var(--p)">${fm(sum('ok'))}</td><td></td></tr></tfoot></table></div></div><button class="btn btn-brand mt-3" onclick="pdfRpt()"><i class="bi bi-file-earmark-pdf"></i> Export PDF</button>`;
-  },
-  async usr(m) {
-    UU = await call('listUsers', [TK]);
-    m.innerHTML = `<div class="d-flex justify-content-between mb-3"><h4 class="fw-bold">ผู้ดูแลระบบ &amp; สิทธิ์</h4><button class="btn btn-brand" onclick="editU()"><i class="bi bi-plus-lg"></i> เพิ่มผู้ดูแล</button></div><div class="card p-3"><div class="table-responsive"><table class="table align-middle mb-0"><thead class="thead-g"><tr><th>ชื่อผู้ใช้</th><th>ชื่อ</th><th>สิทธิ์</th><th></th></tr></thead><tbody>${UU.map(u => `<tr><td>${esc(u.user)}</td><td>${esc(u.name)}</td><td><span class="badge" style="background:var(--pu)">${esc(u.role)}</span></td><td><button class="btn btn-outline-secondary btn-sm" onclick="editU('${esc(u.user)}')"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger btn-sm" onclick="delU('${esc(u.user)}')"><i class="bi bi-trash3"></i></button></td></tr>`).join('')}</tbody></table></div></div><p class="small text-muted mt-2">สิทธิ์: Super ทุกอย่าง · Finance ตรวจสลิป · Merchandise สินค้า · Event โต๊ะ/ข่าว · Viewer ดูรายงาน</p>`;
-  },
-  async set(m) {
-    CC = await call('adminCfg', [TK]);
-    m.innerHTML = `<div class="card p-4"><h5 class="fw-bold">⚙️ ตั้งค่าระบบ</h5><p class="text-muted">ชื่อระบบ: ${esc(CC.SystemName)} · PromptPay: ${esc(CC.PromptPay) || '-'} · Telegram: ${CC.TelegramToken ? 'ตั้งค่าแล้ว' : 'ยังไม่ตั้งค่า'}</p><button class="btn btn-brand" onclick="editSet()"><i class="bi bi-pencil-square"></i> แก้ไขการตั้งค่า (ชื่อ โลโก้ ภาพส่วนหัว QR PromptPay Telegram รหัสผ่าน)</button></div>`;
+    return await f();
+  } finally {
+    if (el) el.style.display = 'none';
   }
 };
+
+/**
+ * เรียก RPC ผ่าน google.script.run (และมีระบบ Mock จำลองอัตโนมัติหากทดสอบนอก Apps Script)
+ */
+const rpc = (fn, ...a) => new Promise(res => {
+  // หากรันใน Google Apps Script แท้
+  if (window.google && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(r => {
+        if (r && r.code == 'AUTH') authLost();
+        res(r || { ok: false, msg: 'ไม่ได้รับข้อมูลจากเซิร์ฟเวอร์' });
+      })
+      .withFailureHandler(e => {
+        res({ ok: false, msg: (e && e.message) || 'เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ' });
+      })[fn](...a);
+    return;
+  }
+
+  // หากรันใน Local Storage Fallback (สำหรับการทดสอบในเบราว์เซอร์)
+  setTimeout(() => {
+    try {
+      res(mockRpc(fn, a));
+    } catch(err) {
+      res({ ok: false, msg: 'Mock Error: ' + err.message });
+    }
+  }, 300);
+});
+
+// Mock Local Storage สำหรับพรีวิว
+function getStorage(k, def) {
+  try {
+    const v = localStorage.getItem('rk_gas_' + k);
+    return v ? JSON.parse(v) : def;
+  } catch(e) { return def; }
+}
+function setStorage(k, v) {
+  try {
+    localStorage.setItem('rk_gas_' + k, JSON.stringify(v));
+  } catch(e) {}
+}
+
+function mockRpc(fn, a) {
+  let db = getStorage('db', null);
+  if (!db) {
+    db = {
+      cfg: EMPTY().cfg,
+      prods: [
+        { id: 1, name: 'เสื้อโปโลที่ระลึกผ้าป่า 69', color: 'ม่วง', price: 350, emoji: '👕', img: '', sz: { S: {n:50, s:4}, M: {n:80, s:12}, L: {n:100, s:15}, XL: {n:70, s:8}, '2XL': {n:30, s:2} } },
+        { id: 2, name: 'เสื้อยืดคอกลมผ้าป่าศิษย์เก่า', color: 'แสด', price: 250, emoji: '🎽', img: '', sz: { S: {n:40, s:2}, M: {n:60, s:5}, L: {n:80, s:6}, XL: {n:50, s:3}, '2XL': {n:20, s:1} } },
+        { id: 3, name: 'แก้วน้ำเก็บความเย็นร่มเกล้าฯ', color: '-', price: 299, emoji: '🥤', img: '', sz: { 'ฟรีไซซ์': {n:100, s:10} } }
+      ],
+      news: [
+        { id: 1718000000000, at: Date.now() - 86400000 * 2, t: 'ขอเชิญร่วมทำบุญทอดผ้าป่าสามัคคีเพื่อการศึกษา ประจำปี 2569', d: 'โรงเรียนร่มเกล้าพิทยาสรรค์ ขอเชิญชวนศิษย์เก่า ผู้ปกครอง และผู้มีจิตศรัทธา ร่วมทำบุญทอดผ้าป่าเพื่อการศึกษาและพัฒนาคุณภาพการเรียนรู้', img: '' }
+      ],
+      sch: [
+        { id: 1, d: '20 ธ.ค. 2569 · 08.30 น.', t: 'พิธีตักบาตรพระสงฆ์ 9 รูป', det: 'ณ บริเวณลานหน้าเสาธง โรงเรียนร่มเกล้าพิทยาสรรค์', img: '' },
+        { id: 2, d: '20 ธ.ค. 2569 · 10.30 น.', t: 'พิธีทอดผ้าป่าเพื่อการศึกษา', det: 'ณ หอประชุมโรงเรียนร่มเกล้าพิทยาสรรค์', img: '' },
+        { id: 3, d: '20 ธ.ค. 2569 · 12.00 น.', t: 'ร่วมรับประทานอาหารโต๊ะจีนสามัคคี', det: 'การแสดงของนักเรียนและการพบปะศิษย์เก่า', img: '' }
+      ],
+      don: [
+        { id: 'DON-2569-000001', at: Date.now() - 3600000 * 5, name: 'นายสมชาย ใจบุญ', phone: '0812345678', email: 'somchai@example.com', type: 'ศิษย์เก่า', amount: 5000, show: true, wish: 'ขอให้โรงเรียนเจริญก้าวหน้า', rc: true, slip: '', status: 'ok', reason: '' },
+        { id: 'DON-2569-000002', at: Date.now() - 3600000 * 2, name: 'นางสาวพิมพ์ใจ รักเรียน', phone: '0899887766', email: '', type: 'ผู้ปกครอง', amount: 1000, show: true, wish: 'ร่วมบุญเพื่อเด็กๆ', rc: false, slip: '', status: 'ok', reason: '' }
+      ],
+      ord: [
+        { id: 'ORD-2569-000001', at: Date.now() - 7200000, name: 'นายมานะ อดทน', phone: '0845556677', method: 'รับที่โรงเรียน', addr: '', items: [{ id: 1, p: 'เสื้อโปโลที่ระลึกผ้าป่า 69', s: 'L', q: 2, price: 350 }], total: 700, ship: 0, slip: '', status: 'ok', reason: '' }
+      ],
+      tbl: [
+        { id: 'TBL-2569-00001', at: Date.now() - 86400000, t: 'T01', name: 'ศิษย์เก่ารุ่น 25', org: 'ศิษย์เก่ารุ่น 25', phone: '0811122233', pax: 8, note: 'โต๊ะหน้าเวที', total: 3000, slip: '', status: 'ok', reason: '' }
+      ],
+      tables: Array.from({ length: 12 }, (_, i) => 'T' + String(i + 1).padStart(2, '0')),
+      pass: 'admin1234'
+    };
+    setStorage('db', db);
+  }
+
+  if (fn === 'getPublic') {
+    const dn = db.don.filter(d => d.status === 'ok');
+    const sum = dn.reduce((a, b) => a + b.amount, 0);
+    const ordOk = db.ord.filter(o => o.status === 'ok');
+    const totalItems = ordOk.reduce((a, o) => a + o.items.reduce((x, i) => x + i.q, 0), 0);
+    return {
+      ok: true,
+      data: {
+        cfg: db.cfg,
+        prods: db.prods,
+        news: db.news,
+        sch: db.sch,
+        tables: Array.from({ length: (db.cfg.rows || 3) * (db.cfg.cols || 4) }, (_, i) => 'T' + String(i + 1).padStart(2, '0')),
+        agg: { sum: sum, n: dn.length, items: totalItems },
+        don: db.don.map(d => ({ id: d.id, at: d.at, name: d.name, type: d.type, amount: d.amount, show: d.show, status: d.status })),
+        tbl: db.tbl.map(t => ({ t: t.t, status: t.status }))
+      }
+    };
+  }
+
+  if (fn === 'adminLogin') {
+    if (a[0] === 'admin' && (a[1] === db.pass || a[1] === 'admin1234')) {
+      return { ok: true, token: 'mock-token-gas-' + Date.now() };
+    }
+    return { ok: false, msg: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง (รหัสเริ่มต้นคือ admin1234)' };
+  }
+
+  if (fn === 'adminLogout') return { ok: true };
+
+  if (fn === 'adminGetAll') {
+    const pub = mockRpc('getPublic', []).data;
+    pub.don = db.don;
+    pub.ord = db.ord;
+    pub.tbl = db.tbl;
+    return { ok: true, data: pub };
+  }
+
+  if (fn === 'submitDonation') {
+    const p = a[0];
+    const id = 'DON-2569-' + String(db.don.length + 1).padStart(6, '0');
+    db.don.unshift({
+      id: id,
+      at: Date.now(),
+      name: p.name,
+      phone: p.phone,
+      email: p.email || '',
+      type: p.type || 'บุคคลทั่วไป',
+      amount: Number(p.amount),
+      show: Boolean(p.show),
+      wish: p.wish || '',
+      rc: Boolean(p.rc),
+      slip: p.slip || '',
+      status: 'wait',
+      reason: ''
+    });
+    setStorage('db', db);
+    return { ok: true, id: id };
+  }
+
+  if (fn === 'submitOrder') {
+    const p = a[0];
+    const id = 'ORD-2569-' + String(db.ord.length + 1).padStart(6, '0');
+    let sub = 0;
+    const enriched = [];
+    for (const it of p.items) {
+      const prod = db.prods.find(x => x.id === it.id);
+      if (prod && prod.sz[it.s]) {
+        prod.sz[it.s].s += it.q;
+        sub += prod.price * it.q;
+        enriched.push({ id: it.id, p: prod.name, s: it.s, q: it.q, price: prod.price });
+      }
+    }
+    const ship = p.method === 'จัดส่ง' ? 40 : 0;
+    const total = sub + ship;
+    db.ord.unshift({
+      id: id,
+      at: Date.now(),
+      name: p.name,
+      phone: p.phone,
+      method: p.method,
+      addr: p.addr || '',
+      items: enriched,
+      total: total,
+      ship: ship,
+      slip: p.slip || '',
+      status: 'wait',
+      reason: ''
+    });
+    setStorage('db', db);
+    return { ok: true, id: id, total: total };
+  }
+
+  if (fn === 'submitTable') {
+    const p = a[0];
+    const id = 'TBL-2569-' + String(db.tbl.length + 1).padStart(5, '0');
+    db.tbl.unshift({
+      id: id,
+      at: Date.now(),
+      t: p.t,
+      name: p.name,
+      org: p.org || '',
+      phone: p.phone,
+      pax: Number(p.pax),
+      note: p.note || '',
+      total: db.cfg.price || 3000,
+      slip: p.slip || '',
+      status: 'wait',
+      reason: ''
+    });
+    setStorage('db', db);
+    return { ok: true, id: id };
+  }
+
+  if (fn === 'searchItem') {
+    const id = String(a[0] || '').trim().toUpperCase();
+    const phone = String(a[1] || '').trim().replace(/[^0-9]/g, '');
+
+    const don = db.don.find(x => x.id.toUpperCase() === id && x.phone.replace(/[^0-9]/g, '') === phone);
+    if (don) {
+      return { ok: true, rec: { kd: 'don', id: don.id, at: don.at, name: don.name, phone: don.phone, email: don.email, type: don.type, amt: don.amount, show: don.show, wish: don.wish, rc: don.rc, status: don.status, reason: don.reason } };
+    }
+
+    const ord = db.ord.find(x => x.id.toUpperCase() === id && x.phone.replace(/[^0-9]/g, '') === phone);
+    if (ord) {
+      return { ok: true, rec: { kd: 'ord', id: ord.id, at: ord.at, name: ord.name, phone: ord.phone, method: ord.method, addr: ord.addr, items: ord.items, amt: ord.total, ship: ord.ship, status: ord.status, reason: ord.reason } };
+    }
+
+    const tbl = db.tbl.find(x => x.id.toUpperCase() === id && x.phone.replace(/[^0-9]/g, '') === phone);
+    if (tbl) {
+      return { ok: true, rec: { kd: 'tbl', id: tbl.id, at: tbl.at, t: tbl.t, name: tbl.name, org: tbl.org, phone: tbl.phone, pax: tbl.pax, note: tbl.note, amt: tbl.total, status: tbl.status, reason: tbl.reason } };
+    }
+
+    return { ok: false, msg: 'ไม่พบรายการที่ตรงกับเลขที่และเบอร์โทรนี้' };
+  }
+
+  if (fn === 'adminReview') {
+    const id = a[1];
+    const act = a[2];
+    const reason = a[3] || '';
+    let target = db.don.find(x => x.id === id) || db.ord.find(x => x.id === id) || db.tbl.find(x => x.id === id);
+    if (target) {
+      target.status = act;
+      target.reason = reason;
+      setStorage('db', db);
+      return { ok: true };
+    }
+    return { ok: false, msg: 'ไม่พบรายการ' };
+  }
+
+  if (fn === 'adminGetSlip') {
+    return { ok: true, data: a[1] || '' };
+  }
+
+  if (fn === 'adminSaveConfig') {
+    Object.assign(db.cfg, a[1]);
+    if (a[2]) db.pass = a[2];
+    setStorage('db', db);
+    return { ok: true };
+  }
+
+  if (fn === 'adminSaveProducts') {
+    db.prods = a[1];
+    setStorage('db', db);
+    return { ok: true };
+  }
+
+  if (fn === 'adminSaveNews') {
+    db.news = a[1];
+    setStorage('db', db);
+    return { ok: true };
+  }
+
+  if (fn === 'adminSaveSchedule') {
+    db.sch = a[1];
+    setStorage('db', db);
+    return { ok: true };
+  }
+
+  if (fn === 'adminSaveTables') {
+    Object.assign(db.cfg, a[1]);
+    setStorage('db', db);
+    return { ok: true };
+  }
+
+  if (fn === 'adminResetAll') {
+    db.don = [];
+    db.ord = [];
+    db.tbl = [];
+    db.prods.forEach(p => Object.values(p.sz).forEach(z => z.s = 0));
+    setStorage('db', db);
+    return { ok: true };
+  }
+
+  return { ok: false, msg: 'Unknown RPC: ' + fn };
+}
+
+function authLost() {
+  if (!A) return;
+  A = false;
+  TK = '';
+  FULL = false;
+  LT = 0;
+  try { sessionStorage.removeItem('rk_t'); } catch (e) {}
+  Swal.fire({
+    icon: 'info',
+    title: 'เซสชันหมดอายุ',
+    text: 'กรุณาเข้าสู่ระบบ Admin ใหม่',
+    confirmButtonColor: '#db0862'
+  });
+  if (V == 'admin') draw();
+}
+
+async function loadPublic() {
+  const r = await rpc('getPublic');
+  if (r.ok) {
+    S = r.data;
+    FULL = false;
+    LT = Date.now();
+  }
+  return r;
+}
+
+async function loadAdmin() {
+  const r = await rpc('adminGetAll', TK);
+  if (r.ok) {
+    S = r.data;
+    FULL = true;
+    LT = Date.now();
+  }
+  return r;
+}
+
+const errT = (r, d) => {
+  if (r && r.code == 'AUTH') return;
+  toast((r && r.msg) || d || 'ดำเนินการไม่สำเร็จ', 'error');
+};
+
+async function persist(kind) {
+  const fn = { prods: 'adminSaveProducts', news: 'adminSaveNews', sch: 'adminSaveSchedule' }[kind];
+  const r = await busy(async () => {
+    const a = await rpc(fn, TK, S[kind]);
+    await loadAdmin();
+    return a;
+  });
+  if (!r.ok) {
+    errT(r, 'บันทึกไม่สำเร็จ');
+    return false;
+  }
+  return true;
+}
+
+async function navA(k) {
+  AT = k;
+  menu = false;
+  if (['dash', 'pend', 'rpt'].includes(k) && Date.now() - LT > 15000) {
+    await busy(loadAdmin);
+  }
+  draw();
+}
+
+async function saveObj() {
+  const el = $('#ob');
+  if (!el) return;
+  const r = await busy(async () => {
+    const a = await rpc('adminSaveConfig', TK, { obj: el.value }, '');
+    if (a.ok) await loadAdmin();
+    return a;
+  });
+  if (!r.ok) return errT(r, 'บันทึกไม่สำเร็จ');
+  toast('บันทึกเรียบร้อย');
+  draw();
+}
+
+const toast = (t, i = 'success') => Swal.fire({
+  icon: i,
+  title: t,
+  confirmButtonColor: '#db0862',
+  timer: 2200
+});
+
+const stBadge = s => s == 'ok'
+  ? '<span class="badge" style="background:#26A69A">🟢 ยืนยันแล้ว</span>'
+  : s == 'wait'
+  ? '<span class="badge" style="background:#F57C00">🟡 รอตรวจสอบ</span>'
+  : '<span class="badge" style="background:#D32F2F">🔴 ไม่ผ่าน</span>';
+
+const stats = () => {
+  let sum, n, items;
+  if (!FULL && S.agg) {
+    sum = S.agg.sum;
+    n = S.agg.n;
+    items = S.agg.items;
+  } else {
+    const dn = S.don.filter(d => d.status == 'ok');
+    sum = dn.reduce((a, d) => a + d.amount, 0);
+    n = dn.length;
+    items = S.ord.filter(o => o.status == 'ok').reduce((a, o) => a + o.items.reduce((x, i) => x + i.q, 0), 0);
+  }
+  const tb = S.tbl.filter(t => t.status != 'no').length;
+  const tblTotal = S.tables ? S.tables.length : 12;
+  return {
+    sum: sum || 0,
+    n: n || 0,
+    pct: Math.min(100, S.cfg.target ? (sum / S.cfg.target) * 100 : 0),
+    tb,
+    items: items || 0,
+    tbl: tblTotal
+  };
+};
+
+const logo = () => S.cfg.logo
+  ? '<img src="' + S.cfg.logo + '" class="w-10 h-10 rounded-xl object-cover">'
+  : '<div class="ico" style="background:linear-gradient(135deg,#4A2C6D,#FF8A65);width:40px;height:40px">🏫</div>';
+
+const fileURL = f => new Promise(r => {
+  if (!f) return r('');
+  const x = new FileReader();
+  x.onerror = () => r('');
+  x.onload = () => {
+    const src = x.result;
+    if (f.size < 300000 && /png/.test(f.type)) return r(src);
+    const im = new Image();
+    im.onload = () => {
+      const k = Math.min(1, 1000 / Math.max(im.width, im.height));
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(im.width * k));
+      c.height = Math.max(1, Math.round(im.height * k));
+      const g = c.getContext('2d');
+      g.fillStyle = '#fff';
+      g.fillRect(0, 0, c.width, c.height);
+      g.drawImage(im, 0, 0, c.width, c.height);
+      r(c.toDataURL('image/jpeg', 0.82));
+    };
+    im.onerror = () => r(src);
+    im.src = src;
+  };
+  x.readAsDataURL(f);
+});
+
+const kill = () => {
+  charts.forEach(c => {
+    try { c.destroy(); } catch (e) {}
+  });
+  charts = [];
+};
+
+const badgeP = {
+  id: 'bd',
+  afterDatasetsDraw(c) {
+    const x = c.ctx;
+    c.data.datasets.forEach((d, i) => c.getDatasetMeta(i).data.forEach((e, j) => {
+      const v = d.data[j];
+      if (!v) return;
+      const p = e.getCenterPoint(), t = fm(v);
+      x.save();
+      x.font = '600 11px Sarabun';
+      const w = x.measureText(t).width + 12;
+      x.fillStyle = '#4A2C6D';
+      x.beginPath();
+      x.roundRect(p.x - w / 2, p.y - 9, w, 18, 9);
+      x.fill();
+      x.fillStyle = '#fff';
+      x.textAlign = 'center';
+      x.textBaseline = 'middle';
+      x.fillText(t, p.x, p.y + 1);
+      x.restore();
+    }));
+  }
+};
+
+const mk = (id, type, labels, data, colors) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  charts.push(new Chart(el, {
+    type,
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: colors,
+        borderWidth: 0,
+        borderRadius: type == 'bar' ? 8 : 0
+      }]
+    },
+    plugins: [badgeP],
+    options: {
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: type != 'bar', position: 'bottom' }
+      },
+      scales: type == 'bar' ? {
+        y: { beginAtZero: true, grid: { color: '#8883' } },
+        x: { grid: { display: false } }
+      } : {}
+    }
+  }));
+};
+
+const PAL = ['#db0862', '#4A2C6D', '#FF8A65', '#26A69A', '#FFCA28', '#0288D1', '#AED581'];
+
+const go = async v => {
+  menu = false;
+  if (v == 'admin' && A && !FULL) {
+    const r = await busy(loadAdmin);
+    if (!r.ok) {
+      errT(r, 'โหลดข้อมูลไม่สำเร็จ');
+      V = A ? 'home' : 'admin';
+      scrollTo(0, 0);
+      draw();
+      return;
+    }
+  } else if (v != 'admin' && !FULL && ['home', 'shop', 'table'].includes(v) && Date.now() - LT > 30000) {
+    await busy(loadPublic);
+  }
+  V = v;
+  scrollTo(0, 0);
+  draw();
+};
+
+const NAV = [
+  ['home', '🏠', 'หน้าแรก', '#4A2C6D'],
+  ['donate', '💰', 'บริจาค', '#db0862'],
+  ['shop', '👕', 'ของที่ระลึก', '#FF8A65'],
+  ['table', '🪑', 'จองโต๊ะ', '#26A69A'],
+  ['search', '🔎', 'ค้นหา', '#0288D1']
+];
+
+function draw() {
+  kill();
+  const a = $('#app');
+  if (V == 'admin') {
+    a.innerHTML = A ? adminUI() : loginUI();
+    if (A) adminInit();
+    return;
+  }
+  a.innerHTML = `<header class="sticky top-0 z-30 backdrop-blur" style="background:color-mix(in srgb,var(--bg) 85%,transparent);border-bottom:1px solid var(--bd)">
+    <div class="max-w-6xl mx-auto px-4 py-2 flex items-center gap-3">
+      ${logo()}
+      <div class="leading-tight">
+        <b class="text-sm md:text-base">${S.cfg.name}</b>
+        <div class="text-xs" style="color:var(--mut)">โรงเรียนร่มเกล้าพิทยาสรรค์</div>
+      </div>
+      <nav class="hidden md:flex ml-auto gap-1">
+        ${NAV.map(n => `<a class="nav-a ${V == n[0] ? 'on' : ''}" onclick="go('${n[0]}')">${IC(n[0], 'lg')} ${n[2]}</a>`).join('')}
+      </nav>
+      <button class="btn alt ml-auto md:ml-2 text-xs md:text-sm !py-1.5 !px-3" onclick="go('admin')">
+        ${IC('key', 'lg')} <span class="hidden sm:inline">Admin</span>
+      </button>
+    </div>
+  </header>
+  <main class="max-w-6xl mx-auto px-4 py-5 pb-28 fade" id="main"></main>
+  <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 card flex justify-around items-end px-2 pt-2" style="border-radius:22px 22px 0 0;padding-bottom:calc(.5rem + env(safe-area-inset-bottom,0px))">
+    ${NAV.map(n => {
+      const c = n[0] == 'home';
+      return `<a onclick="go('${n[0]}')" class="flex flex-col items-center text-[11px] ${V == n[0] ? 'font-bold' : ''}" style="color:${V == n[0] ? 'var(--pri)' : 'var(--mut)'}">
+        <span class="ico ${c ? '' : '!w-9 !h-9 !text-lg'}" style="background:${n[3]};${c ? 'margin-top:-22px;box-shadow:0 6px 16px ' + n[3] + '88;width:54px;height:54px' : ''}">${SV(n[0])}</span>
+        ${n[2]}
+      </a>`;
+    }).join('')}
+  </nav>`;
+
+  const m = $('#main');
+  ({ home, donate, shop, table, search }[V])(m);
+}
+
+function home(m) {
+  const s = stats();
+  m.innerHTML = `<section class="rounded-3xl p-6 md:p-10 text-white relative overflow-hidden shadow-xl" style="background:${S.cfg.banner ? 'linear-gradient(#4A2C6Dcc,#db0862aa),url(' + S.cfg.banner + ') center/cover' : 'linear-gradient(135deg,#4A2C6D,#db0862 60%,#FF8A65)'}">
+    <div class="text-sm opacity-90">🙏 งานผ้าป่าเพื่อการศึกษา</div>
+    <h1 class="text-2xl md:text-4xl font-bold mt-1">${S.cfg.sub || 'ขอเชิญร่วมทำบุญทอดผ้าป่าสามัคคีเพื่อการศึกษา'}</h1>
+    <p class="opacity-90 mt-1">${S.cfg.name} · โรงเรียนร่มเกล้าพิทยาสรรค์ สพม.มุกดาหาร</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+      ${[['donate', '💰', 'ร่วมบริจาค', '#db0862'], ['shop', '👕', 'จองของที่ระลึก', '#FF8A65'], ['table', '🪑', 'จองโต๊ะออนไลน์', '#26A69A'], ['search', '🔎', 'ค้นหารายการ', '#0288D1']].map(b => `<button onclick="go('${b[0]}')" class="tb rounded-2xl p-4 bg-white text-left shadow-lg" style="color:#2a1a3a"><span class="ico mb-2" style="background:${b[3]}">${SV(b[0])}</span><b>${b[2]}</b></button>`).join('')}
+    </div>
+  </section>
+
+  <div class="sh rv">📊 ภาพรวมการระดมทุน</div>
+  <section class="grid md:grid-cols-3 gap-4">
+    <div class="card p-5 md:col-span-2">
+      <div class="flex justify-between items-end">
+        <div>
+          <div class="lbl">🎯 เป้าหมาย ${fm(S.cfg.target)} บาท</div>
+          <div class="text-3xl font-bold" style="color:var(--pri)">
+            <span data-n="${s.sum}">${fm(s.sum)}</span> <span class="text-base">บาท</span>
+          </div>
+        </div>
+        <span class="badge" style="background:#4A2C6D">${s.pct.toFixed(1)}%</span>
+      </div>
+      <div class="h-4 rounded-full mt-3 overflow-hidden" style="background:var(--bd)">
+        <div class="h-full rounded-full" data-w="${s.pct}" style="width:${s.pct}%;transition:width 1.5s cubic-bezier(.2,.7,.2,1);background:linear-gradient(90deg,#FF8A65,#db0862)"></div>
+      </div>
+      <div class="grid grid-cols-3 gap-3 mt-4 text-center">
+        ${[['👥', s.n, 'ผู้ร่วมบริจาค'], ['🪑', s.tb + '/' + s.tbl, 'โต๊ะที่จอง'], ['👕', s.items, 'ของที่ระลึก']].map(x => `<div class="rounded-xl p-3" style="background:var(--bg)"><div class="text-xl">${x[0]}</div><b class="text-lg">${x[1]}</b><div class="text-xs" style="color:var(--mut)">${x[2]}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="card p-5">
+      <div class="lbl">% การบริจาคจากเป้าหมาย</div>
+      <div style="height:190px"><canvas id="c1"></canvas></div>
+    </div>
+  </section>
+
+  <div class="sh rv">📅 กำหนดการ & ผู้ร่วมบริจาคล่าสุด</div>
+  <section class="grid md:grid-cols-2 gap-4">
+    <div class="card p-5">
+      <h3 class="font-bold mb-3">📅 กำหนดการ & วัตถุประสงค์</h3>
+      <div class="text-sm rounded-2xl p-3 mb-4" style="background:var(--bg)">🎯 ${S.cfg.obj || 'เพื่อพัฒนาการเรียนรู้ของนักเรียน'}</div>
+      <div class="tl">
+        ${S.sch.map(x => `<div class="tli"><b class="text-sm">${x.t}</b><div class="text-xs" style="color:var(--pri)">${x.d}</div><div class="text-sm" style="color:var(--mut)">${x.det || ''}</div>${x.img ? '<img src="' + x.img + '" class="mt-2 rounded-2xl w-full max-h-40 object-cover">' : ''}</div>`).join('')}
+      </div>
+      <p class="text-sm mt-1">📞 ติดต่อโรงเรียน: โรงเรียนร่มเกล้าพิทยาสรรค์ จ.มุกดาหาร</p>
+    </div>
+    <div class="card p-5">
+      <h3 class="font-bold mb-2">💝 ผู้ร่วมบริจาคล่าสุด</h3>
+      <div class="grid gap-2">
+        ${[...S.don].filter(d => d.status == 'ok').sort((a, b) => b.at - a.at).slice(0, 6).map(d => `<div class="flex items-center gap-3 rounded-2xl p-2" style="background:var(--bg)"><span class="ico !w-9 !h-9 !text-base" style="background:#db0862">💰</span><div class="flex-1 min-w-0"><div class="truncate font-semibold text-sm">${d.show ? d.name : 'ผู้ไม่ประสงค์ออกนาม'}</div><div class="text-xs" style="color:var(--mut)">${new Date(d.at).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' })} · ${d.type}</div></div><span class="badge" style="background:#26A69A">${fm(d.amount)} ฿</span></div>`).join('') || '<div class="text-sm" style="color:var(--mut)">ยังไม่มีรายการ</div>'}
+      </div>
+    </div>
+  </section>
+
+  <div class="sh rv">📰 ข่าวประชาสัมพันธ์</div>
+  <section class="card p-5">
+    ${S.news.map(n => `<div class="py-2 border-b" style="border-color:var(--bd)"><b>${n.t}</b><div class="text-sm" style="color:var(--mut)">${n.d}</div>${n.img ? '<img src="' + n.img + '" class="mt-2 rounded-2xl w-full max-h-52 object-cover">' : ''}</div>`).join('') || '<div class="text-sm" style="color:var(--mut)">ไม่มีข่าวสารใหม่</div>'}
+  </section>`;
+
+  mk('c1', 'doughnut', ['บริจาคแล้ว', 'คงเหลือ'], [Math.round(s.sum), Math.max(0, S.cfg.target - s.sum)], ['#db0862', '#e5dcec']);
+}
+
+const field = (id, l, t = 'text', x = '') => `<div><label class="lbl">${l}</label><input id="${id}" type="${t}" class="inp" ${x}></div>`;
+const slipBox = `<div><label class="lbl">📎 อัปโหลดสลิปการโอนเงิน (รูปภาพ)</label><input id="slip" type="file" accept="image/*" class="inp"></div>`;
+const ppBox = () => `<div class="rounded-2xl p-4 text-center" style="background:var(--bg)"><div class="lbl">สแกน QR PromptPay</div>${S.cfg.ppImg ? '<img src="' + S.cfg.ppImg + '" class="mx-auto w-44 rounded-xl shadow">' : '<div class="w-44 h-44 mx-auto rounded-xl grid place-items-center bg-white text-5xl border shadow-inner">▦</div><div class="text-xs mt-1" style="color:var(--mut)">Admin สามารถตั้งค่า QR ได้ที่เมนูตั้งค่า</div>'}${S.cfg.pp ? '<div class="mt-2 font-semibold text-sm">PromptPay: ' + S.cfg.pp + '</div>' : ''}</div>`;
+
+function skel(m, f) {
+  m.innerHTML = '<div class="grid gap-3"><div class="sk h-24"></div><div class="sk h-64"></div></div>';
+  setTimeout(f, 250);
+}
+
+function donate(m) {
+  skel(m, () => {
+    m.innerHTML = `<div class="grid md:grid-cols-5 gap-4">
+      <div class="card p-5 md:col-span-3 grid gap-3">
+        <h2 class="text-xl font-bold">💰 ร่วมบริจาคสมทบทุนเพื่อการศึกษา</h2>
+        <div class="grid sm:grid-cols-2 gap-3">
+          ${field('dn', 'ชื่อ–นามสกุล')}
+          ${field('dp', 'เบอร์โทรศัพท์', 'tel')}
+          ${field('de', 'อีเมล', 'email')}
+          <div>
+            <label class="lbl">ประเภทผู้บริจาค</label>
+            <select id="dt" class="inp">
+              ${['ศิษย์เก่า', 'ผู้ปกครอง', 'ครู/บุคลากร', 'นักเรียน', 'บุคคลทั่วไป', 'หน่วยงาน/องค์กร'].map(x => '<option>' + x + '</option>').join('')}
+            </select>
+          </div>
+        </div>
+        ${field('da', 'จำนวนเงินบริจาค (บาท)', 'number', 'min="1" value="500"')}
+        <div class="flex gap-2 flex-wrap">
+          ${[100, 500, 1000, 2000, 5000].map(v => `<button type="button" class="btn alt !py-1 !px-3 text-xs" onclick="document.getElementById('da').value=${v}">+${fm(v)}</button>`).join('')}
+        </div>
+        ${field('dw', 'ข้อความอวยพร / คำอนุโมทนา')}
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="dr"> ต้องการใบอนุโมทนาบัตร / หลักฐาน</label>
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="ds" checked> แสดงชื่อผู้บริจาคบน Wall of Donors</label>
+      </div>
+      <div class="md:col-span-2 grid gap-3 content-start card p-5">
+        ${ppBox()}
+        ${slipBox}
+        <button class="btn w-full mt-2" onclick="subDon()">✅ ส่งข้อมูลการบริจาค</button>
+      </div>
+    </div>`;
+  });
+}
+
+async function subDon() {
+  const dn = $('#dn'), dp = $('#dp'), de = $('#de'), dt = $('#dt'), da = $('#da'), dw = $('#dw'), dr = $('#dr'), ds = $('#ds'), slip = $('#slip');
+  const n = dn.value.trim(), p = dp.value.trim(), a = +da.value;
+  if (!n || !p || !a) return toast('กรุณากรอกชื่อ เบอร์โทร และจำนวนเงิน', 'warning');
+  if (!slip.files[0]) return toast('กรุณาอัปโหลดสลิปการโอนเงิน', 'warning');
+
+  const slipData = await fileURL(slip.files[0]);
+  const r = await busy(async () => rpc('submitDonation', {
+    name: n,
+    phone: p,
+    email: de.value.trim(),
+    type: dt.value,
+    amount: a,
+    show: ds.checked,
+    wish: dw.value,
+    rc: dr.checked,
+    slip: slipData
+  }));
+
+  if (!r.ok) return errT(r, 'ส่งข้อมูลไม่สำเร็จ');
+  await Swal.fire({
+    icon: 'success',
+    title: 'ส่งข้อมูลสำเร็จ',
+    html: 'เลขที่รายการ<br><b style="font-size:1.4rem;color:#db0862">' + r.id + '</b><br>สถานะ 🟡 รอตรวจสอบ<br><span style="font-size:.85rem;color:#7a6b88">กรุณาจดเลขที่รายการ ใช้ค้นหาพร้อมเบอร์โทรภายหลัง</span>',
+    confirmButtonColor: '#db0862'
+  });
+  await busy(loadPublic);
+  go('home');
+}
+
+function shop(m) {
+  skel(m, () => {
+    m.innerHTML = `<div class="grid lg:grid-cols-3 gap-4">
+      <div class="lg:col-span-2 grid sm:grid-cols-2 gap-3">
+        ${S.prods.map(p => {
+          const rem = Object.values(p.sz).reduce((a, z) => a + (z.n - z.s), 0);
+          return `<div class="card p-4 flex flex-col justify-between">
+            <div>
+              <div class="h-32 rounded-xl grid place-items-center text-6xl mb-3 overflow-hidden shadow-inner" style="background:var(--bg)">
+                ${p.img ? '<img src="' + p.img + '" class="w-full h-full object-cover">' : p.emoji}
+              </div>
+              <b class="text-base">${p.name} ${p.color != '-' ? 'สี' + p.color : ''}</b>
+              <div style="color:var(--pri)" class="font-bold text-lg">${fm(p.price)} บาท</div>
+            </div>
+            <div class="mt-3">
+              ${rem <= 0 ? '<span class="badge" style="background:#EF5350">❌ สินค้าหมด</span>' : `
+                <div class="flex gap-2">
+                  <select id="sz${p.id}" class="inp !py-1 text-sm">
+                    ${Object.entries(p.sz).map(([k, z]) => `<option value="${k}" ${z.n - z.s <= 0 ? 'disabled' : ''}>${k} (เหลือ ${z.n - z.s})</option>`).join('')}
+                  </select>
+                  <input id="q${p.id}" type="number" min="1" value="1" class="inp !w-20 !py-1 text-sm">
+                </div>
+                <button class="btn w-full mt-2 text-sm" onclick="addCart(${p.id})">➕ ใส่ตะกร้า</button>
+              `}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="card p-5 h-fit grid gap-3 lg:sticky lg:top-20">
+        <h3 class="font-bold text-lg">🛒 รายการสั่งจอง</h3>
+        <div id="cart"></div>
+        ${field('on', 'ชื่อผู้จอง')}
+        ${field('op', 'เบอร์โทรศัพท์', 'tel')}
+        <div>
+          <label class="lbl">วิธีรับสินค้า</label>
+          <select id="om" class="inp" onchange="cartDraw()">
+            <option>รับที่โรงเรียน</option>
+            <option>รับวันงาน</option>
+            <option>จัดส่ง</option>
+          </select>
+        </div>
+        <div id="ab" class="hidden fade">
+          <label class="lbl">📍 ที่อยู่จัดส่ง (ค่าจัดส่ง +40 บาท)</label>
+          <textarea id="oa" class="inp" rows="3" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์"></textarea>
+        </div>
+        ${ppBox()}
+        ${slipBox}
+        <button class="btn w-full mt-2" onclick="subOrd()">✅ ยืนยันการจอง</button>
+      </div>
+    </div>`;
+    cartDraw();
+  });
+}
+
+function addCart(id) {
+  const p = S.prods.find(x => x.id == id);
+  const szEl = $('#sz' + id);
+  const qEl = $('#q' + id);
+  if (!p || !szEl || !qEl) return;
+  const s = szEl.value;
+  const q = +qEl.value || 1;
+  const z = p.sz[s];
+  if (q > z.n - z.s) return toast('สินค้าไม่เพียงพอในไซซ์นี้', 'warning');
+  cart.push({ id, p: p.name, c: p.color, s, q, price: p.price });
+  cartDraw();
+  toast('ใส่ตะกร้าแล้ว: ' + p.name + ' (' + s + ')');
+}
+
+const SHIP = 40;
+function cartDraw() {
+  const c = $('#cart');
+  if (!c) return;
+  const sub = cart.reduce((a, i) => a + i.q * i.price, 0);
+  const n = cart.reduce((a, i) => a + i.q, 0);
+  const om = $('#om');
+  const ship = !!om && om.value == 'จัดส่ง';
+  const fee = ship && cart.length ? SHIP : 0;
+  const ab = $('#ab');
+  if (ab) ab.classList.toggle('hidden', !ship);
+
+  c.innerHTML = cart.length ? `
+    <div class="grid gap-2 max-h-60 overflow-y-auto">
+      ${cart.map((i, k) => `
+        <div class="flex items-center gap-3 rounded-2xl p-2.5" style="background:var(--bg);border:1px solid var(--bd)">
+          <span class="ico !w-10 !h-10 text-sm" style="background:${i.c == 'แสด' ? '#FF8A65' : '#4A2C6D'}">
+            ${(S.prods.find(p => p.id == i.id) || {}).emoji || '🛍️'}
+          </span>
+          <div class="flex-1 min-w-0">
+            <div class="font-semibold text-xs truncate">${i.p}</div>
+            <div class="flex flex-wrap gap-1 mt-0.5">
+              ${i.c != '-' ? '<span class="badge" style="background:#4A2C6D">' + i.c + '</span>' : ''}
+              <span class="badge" style="background:#0288D1">ไซซ์ ${i.s}</span>
+              <span class="badge" style="background:#26A69A">× ${i.q}</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <b style="color:var(--pri)">${fm(i.q * i.price)}</b>
+            <div><button type="button" class="text-xs" style="color:#D32F2F" onclick="cart.splice(${k},1);cartDraw()">🗑️ ลบ</button></div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="rounded-2xl p-3 mt-3 text-sm grid gap-1" style="background:var(--bg);border:1px solid var(--bd)">
+      <div class="flex justify-between"><span>ค่าสินค้า (${n} ชิ้น)</span><span>${fm(sub)} บาท</span></div>
+      ${ship ? '<div class="flex justify-between"><span>🚚 ค่าจัดส่ง</span><span>+' + SHIP + ' บาท</span></div>' : ''}
+      <div class="flex justify-between items-center pt-2 mt-1 border-t" style="border-color:var(--bd)">
+        <b>ยอดรวมสุทธิ</b>
+        <b class="text-xl" style="color:var(--pri)">${fm(sub + fee)} บาท</b>
+      </div>
+    </div>
+  ` : `
+    <div class="rounded-2xl p-6 text-center text-sm" style="border:2px dashed var(--bd);color:var(--mut)">
+      <div class="text-3xl mb-1">🛒</div>ยังไม่มีสินค้าในตะกร้า
+    </div>
+  `;
+}
+
+async function subOrd() {
+  const on = $('#on'), op = $('#op'), om = $('#om'), oa = $('#oa'), slip = $('#slip');
+  if (!cart.length) return toast('กรุณาเลือกสินค้าอย่างน้อย 1 รายการ', 'warning');
+  if (!on.value.trim() || !op.value.trim() || !slip.files[0]) {
+    return toast('กรอกข้อมูลผู้จองและแนบสลิปให้ครบถ้วน', 'warning');
+  }
+  if (om.value == 'จัดส่ง' && !oa.value.trim()) {
+    return toast('กรุณากรอกที่อยู่สำหรับจัดส่ง', 'warning');
+  }
+
+  const slipData = await fileURL(slip.files[0]);
+  const r = await busy(async () => rpc('submitOrder', {
+    name: on.value.trim(),
+    phone: op.value.trim(),
+    method: om.value,
+    addr: om.value == 'จัดส่ง' ? oa.value.trim() : '',
+    items: cart.map(i => ({ id: i.id, s: i.s, q: i.q })),
+    slip: slipData
+  }));
+
+  if (!r.ok) {
+    errT(r, 'จองไม่สำเร็จ');
+    await busy(loadPublic);
+    draw();
+    return;
+  }
+  cart = [];
+  await Swal.fire({
+    icon: 'success',
+    title: 'จองสำเร็จ',
+    html: 'เลขที่รายการ <b style="color:#db0862">' + r.id + '</b><br>ยอดรวมสุทธิ ' + fm(r.total) + ' บาท<br><span style="font-size:.85rem;color:#7a6b88">กรุณาจดเลขที่รายการ ใช้ค้นหาพร้อมเบอร์โทรภายหลัง</span>',
+    confirmButtonColor: '#db0862'
+  });
+  await busy(loadPublic);
+  go('home');
+}
+
+let selT = null;
+const tState = t => {
+  const b = S.tbl.find(x => x.t == t && x.status != 'no');
+  return b ? (b.status == 'ok' ? 'ok' : 'wait') : 'free';
+};
+
+function table(m) {
+  skel(m, () => {
+    m.innerHTML = `<div class="grid md:grid-cols-5 gap-4">
+      <div class="card p-5 md:col-span-3">
+        <h2 class="text-xl font-bold mb-3">🪑 เลือกโต๊ะจากผังห้องจัดเลี้ยง</h2>
+        <div class="text-center py-2 rounded-xl text-white font-bold mb-4" style="background:#4A2C6D">🎤 เวทีหลัก</div>
+        <div class="grid gap-3" style="grid-template-columns:repeat(${S.cfg.cols || 4},minmax(0,1fr))">
+          ${S.tables.map(t => {
+            const s = tState(t), c = { free: '#26A69A', wait: '#FBC02D', ok: '#EF5350' }[s];
+            return `<button ${s != 'free' ? 'disabled' : ''} onclick="pickT('${t}')" class="tb rounded-2xl py-4 font-bold text-white shadow ${selT == t ? 'ring-4 ring-[#4A2C6D]' : ''}" style="background:${c};opacity:${s == 'free' ? 1 : .75}">
+              ${t}
+              <div class="text-[10px] font-normal">${{ free: 'ว่าง', wait: 'รอตรวจสอบ', ok: 'จองแล้ว' }[s]}</div>
+            </button>`;
+          }).join('')}
+        </div>
+        <div class="text-center py-2 mt-4 rounded-xl border text-sm" style="border-color:var(--bd);color:var(--mut)">🚪 ทางเข้างาน</div>
+      </div>
+      <div class="card p-5 md:col-span-2 grid gap-3 content-start">
+        ${selT ? `
+          <h3 class="font-bold text-lg">โต๊ะ ${selT} · ${fm(S.cfg.price)} บาท (${S.cfg.seat} ที่นั่ง)</h3>
+          ${field('tn', 'ชื่อผู้จอง / ตัวแทน')}
+          ${field('to', 'หน่วยงาน / บริษัท / กลุ่มศิษย์เก่า')}
+          ${field('tp', 'เบอร์โทรศัพท์', 'tel')}
+          ${field('tx', 'จำนวนผู้เข้าร่วม (คน)', 'number', 'max="' + S.cfg.seat + '" value="' + S.cfg.seat + '"')}
+          ${field('tm', 'ข้อความเพิ่มเติม / หมายเหตุ')}
+          ${ppBox()}
+          ${slipBox}
+          <button class="btn w-full mt-2" onclick="subT()">✅ ยืนยันการจองโต๊ะ</button>
+        ` : '<div class="py-10 text-center" style="color:var(--mut)"><div class="text-3xl mb-2">👈</div>กรุณากดเลือกโต๊ะสีเขียวที่ว่างเพื่อจอง</div>'}
+      </div>
+    </div>`;
+  });
+}
+
+function pickT(t) {
+  selT = t;
+  table($('#main'));
+}
+
+const RC = () => {
+  const c = S.cfg.cols || 4;
+  return { c, r: S.cfg.rows || Math.ceil((S.tables.length || 12) / c) };
+};
+
+function tabsUI(m) {
+  const { c, r } = RC();
+  m.innerHTML = `<div class="grid lg:grid-cols-3 gap-4">
+    <div class="card p-5 grid gap-3 content-start">
+      <h2 class="font-bold text-lg">🪑 ตั้งค่าโต๊ะ & ผังที่นั่ง</h2>
+      <div class="grid grid-cols-2 gap-3">
+        ${field('trw', 'จำนวนแถว', 'number', 'min="1" max="10" value="' + r + '"')}
+        ${field('tcl', 'จำนวนคอลัมน์', 'number', 'min="1" max="10" value="' + c + '"')}
+        ${field('tpr', 'ราคาต่อโต๊ะ (บาท)', 'number', 'value="' + S.cfg.price + '"')}
+        ${field('tst', 'ที่นั่งต่อโต๊ะ', 'number', 'min="1" max="20" value="' + S.cfg.seat + '"')}
+      </div>
+      <div class="rounded-2xl p-3 text-sm" style="background:var(--bg)">
+        รวม <b id="tt"></b> โต๊ะ · รองรับ <b id="tp2"></b> คน
+      </div>
+      <button class="btn" onclick="saveTbl()">💾 บันทึกผังโต๊ะ</button>
+    </div>
+    <div class="card p-5 lg:col-span-2">
+      <div class="flex flex-wrap gap-2 items-center mb-3">
+        <b>ตัวอย่างผังที่นั่งจำลอง</b>
+        <span class="badge" style="background:#26A69A">ว่าง</span>
+        <span class="badge" style="background:#FBC02D;color:#2a1a3a">รอชำระ</span>
+        <span class="badge" style="background:#EF5350">จองแล้ว</span>
+      </div>
+      <div id="pv" class="tw mt-4"></div>
+    </div>
+  </div>`;
+  ['trw', 'tcl', 'tst'].forEach(i => {
+    const el = $('#' + i);
+    if (el) el.oninput = seatPv;
+  });
+  seatPv();
+}
+
 function seatPv() {
   const r = +$('#trw').value || 1, c = +$('#tcl').value || 1, n = +$('#tst').value || 1, q = Math.min(n, 20);
-  $('#tt').textContent = r * c; $('#tp2').textContent = r * c * n;
-  const bk = {}; D.tables.forEach(t => bk[t.id] = t.state);
-  $('#pv').innerHTML = `<div class="text-center py-2 rounded-4 text-white fw-bold mb-3 mx-auto" style="background:linear-gradient(135deg,#4a2c6d,#db0862);min-width:${c * 96}px">🎤 เวที</div><div class="d-grid gap-3" style="grid-template-columns:repeat(${c},84px);min-width:${c * 96}px;justify-content:center">${Array.from({ length: r * c }, (_, k) => {
-    const id = 'T' + String(k + 1).padStart(2, '0'), col = { free: '#26a69a', wait: '#fbc02d', ok: '#ef5350' }[bk[id] || 'free'];
-    return `<div class="position-relative" style="width:84px;height:84px">${Array.from({ length: q }, (_, i) => `<i style="position:absolute;left:50%;top:50%;width:11px;height:11px;margin:-5.5px;border-radius:6px 6px 3px 3px;background:${col};box-shadow:0 2px 0 rgba(0,0,0,.25);transform:rotate(${i * 360 / q}deg) translateY(-34px)"></i>`).join('')}<div class="position-absolute d-grid text-white fw-bold small" style="inset:20px;place-items:center;border-radius:50%;background:${col};box-shadow:0 4px 0 rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.5)">${id}</div></div>`;
-  }).join('')}</div>`;
+  $('#tt').textContent = r * c;
+  $('#tp2').textContent = r * c * n;
+  $('#pv').innerHTML = `
+    <div class="text-center py-2 rounded-2xl text-white font-bold mb-4 mx-auto" style="background:linear-gradient(135deg,#4A2C6D,#db0862);min-width:${c * 96}px;box-shadow:0 5px 0 rgba(0,0,0,.2)">🎤 เวที</div>
+    <div class="grid gap-3" style="grid-template-columns:repeat(${c},84px);min-width:${c * 96}px;justify-content:center">
+      ${Array.from({ length: r * c }, (_, k) => {
+        const id = 'T' + String(k + 1).padStart(2, '0');
+        const b = S.tbl.find(x => x.t == id && x.status != 'no');
+        const s = b ? (b.status == 'ok' ? 'ok' : 'wait') : 'free';
+        const col = { free: '#26A69A', wait: '#FBC02D', ok: '#EF5350' }[s];
+        return `<div class="relative" style="width:84px;height:84px">
+          ${Array.from({ length: q }, (_, i) => `<i style="position:absolute;left:50%;top:50%;width:11px;height:11px;margin:-5.5px;border-radius:6px 6px 3px 3px;background:${col};box-shadow:0 2px 0 rgba(0,0,0,.25);transform:rotate(${i * 360 / q}deg) translateY(-34px)"></i>`).join('')}
+          <div class="absolute grid place-items-center text-white text-xs font-bold" style="inset:20px;border-radius:50%;background:${col};box-shadow:0 4px 0 rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.5)">${id}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
 }
-async function review(i) {
-  const r = LST[i], can = ROLE === 'Super' || ROLE === 'Finance', sl = r.slip ? await call('slipImage', [TK, r.slip]) : '';
-  const x = await Swal.fire({ title: r.id, showConfirmButton: can, showDenyButton: can, showCancelButton: true, confirmButtonText: '✅ ยืนยัน', denyButtonText: '❌ ไม่อนุมัติ', cancelButtonText: 'ปิด', confirmButtonColor: '#26a69a',
-    html: `<div class="text-start">ผู้ทำรายการ: <b>${esc(r.who)}</b><br>โทร: ${esc(r.phone)}<br>จำนวน: ${fm(r.amt)} บาท${r.addr ? '<br>ที่อยู่จัดส่ง: ' + esc(r.addr) : ''}${r.items && r.items.length ? '<br>' + r.items.map(i => esc(i.ProductName) + ' ' + esc(i.Size) + '×' + i.Qty).join(', ') : ''}<br>${sl ? `<img src="${sl}" class="img-fluid rounded-4 mt-2" style="max-height:280px;display:block;margin:auto">` : 'ไม่มีสลิป'}</div>` });
-  if (x.isConfirmed) { await call('verify', [TK, r.id, true, '']); done(); }
-  else if (x.isDenied) { const q = await Swal.fire({ title: 'เหตุผลที่ไม่อนุมัติ', input: 'text', showCancelButton: true, confirmButtonColor: '#d32f2f' }); if (q.isConfirmed) { await call('verify', [TK, r.id, false, q.value]); done(); } }
+
+async function saveTbl() {
+  const trw = $('#trw'), tcl = $('#tcl'), tpr = $('#tpr'), tst = $('#tst');
+  const r = +trw.value, c = +tcl.value;
+  if (r < 1 || c < 1) return toast('กรุณาระบุแถวและคอลัมน์', 'warning');
+  const a = await busy(async () => {
+    const x = await rpc('adminSaveTables', TK, { rows: r, cols: c, price: +tpr.value, seat: +tst.value });
+    if (x.ok) await loadAdmin();
+    return x;
+  });
+  if (!a.ok) return errT(a, 'บันทึกไม่สำเร็จ');
+  toast('บันทึกเรียบร้อย');
+  draw();
 }
-async function editP(id) {
-  const p = id ? D.products.find(x => x.id == id) : { name: '', color: '-', price: '', emoji: '🛍️', sizes: [] };
-  const v = await form(id ? '✏️ แก้ไขสินค้า' : '➕ เพิ่มสินค้า', [{ k: 'name', l: 'ชื่อสินค้า', h: 'เช่น เสื้อผ้าป่า' }, { k: 'color', l: 'สี', h: 'ใส่ - ถ้าไม่มีสี' }, { k: 'price', l: 'ราคาต่อชิ้น (บาท)', t: 'number' }, { k: 'emoji', l: 'ไอคอน (อีโมจิ)' }, { k: 'img', l: 'รูปภาพตัวอย่าง', t: 'file', h: 'ไม่เลือก = ใช้รูปเดิม' }, { k: 'sz', l: 'ไซซ์ & จำนวนสต็อก', t: 'textarea', h: '1 บรรทัดต่อ 1 ไซซ์ รูปแบบ ชื่อไซซ์,จำนวนทั้งหมด เช่น M,100' }], { ...p, sz: p.sizes.map(s => s.size + ',' + s.total).join('\n') });
-  if (!v) return;
-  const sizes = v.sz.split('\n').map(l => l.split(',')).filter(a => a[0].trim()).map(a => ({ k: a[0].trim(), n: +a[1] || 0 }));
-  await call('saveProduct', [TK, { id, name: v.name, color: v.color, price: v.price, emoji: v.emoji, img: v.img, sizes }]); done();
+
+async function subT() {
+  const tn = $('#tn'), to = $('#to'), tp = $('#tp'), tx = $('#tx'), tm = $('#tm'), slip = $('#slip');
+  if (!tn.value.trim() || !tp.value.trim() || !slip.files[0]) {
+    return toast('กรอกข้อมูลและแนบสลิปให้ครบ', 'warning');
+  }
+  const slipData = await fileURL(slip.files[0]);
+  const r = await busy(async () => rpc('submitTable', {
+    t: selT,
+    name: tn.value.trim(),
+    org: to.value.trim(),
+    phone: tp.value.trim(),
+    pax: +tx.value,
+    note: tm.value,
+    slip: slipData
+  }));
+  if (!r.ok) {
+    errT(r, 'จองโต๊ะไม่สำเร็จ');
+    await busy(loadPublic);
+    selT = null;
+    draw();
+    return;
+  }
+  selT = null;
+  await Swal.fire({
+    icon: 'success',
+    title: 'จองโต๊ะสำเร็จ',
+    html: 'เลขที่รายการ <b style="color:#db0862">' + r.id + '</b><br><span style="font-size:.85rem;color:#7a6b88">กรุณาจดเลขที่รายการ ใช้ค้นหาพร้อมเบอร์โทรภายหลัง</span>',
+    confirmButtonColor: '#db0862'
+  });
+  await busy(loadPublic);
+  go('home');
 }
-async function delP(id) { if (await sure('ลบสินค้านี้?')) { await call('deleteProduct', [TK, id]); done(); } }
-async function saveT() { await call('saveTables', [TK, { rows: trw.value, cols: tcl.value, price: tpr.value, seats: tst.value }]); done(); }
-async function editC(sheet, id) {
-  const isN = sheet === 'News', x = id ? (isN ? D.news : D.schedule).find(a => a[isN ? 'NewsID' : 'ScheduleID'] == id) : {};
-  const Fs = isN ? [{ k: 'title', l: 'หัวข้อข่าว' }, { k: 'detail', l: 'รายละเอียด', t: 'textarea' }, { k: 'img', l: 'รูปภาพประกอบ', t: 'file', h: 'ไม่เลือก = ใช้รูปเดิม' }]
-    : [{ k: 'date', l: 'วันที่/เวลา', h: 'เช่น 20 ธ.ค. 2569 · 09.00 น.' }, { k: 'title', l: 'หัวข้อกิจกรรม' }, { k: 'detail', l: 'รายละเอียด', t: 'textarea' }, { k: 'img', l: 'รูปภาพประกอบ', t: 'file', h: 'ไม่เลือก = ใช้รูปเดิม' }];
-  const v = await form(id ? '✏️ แก้ไข' : '➕ เพิ่ม', Fs, { title: x.Title, detail: x.Detail, date: x.DateText });
-  if (!v) return; await call(isN ? 'saveNews' : 'saveSchedule', [TK, { ...v, id }]); done();
+
+function search(m) {
+  m.innerHTML = `<div class="card p-5 max-w-xl mx-auto grid gap-3">
+    <h2 class="text-xl font-bold">🔎 ค้นหารายการ & ตรวจสอบสถานะ</h2>
+    ${field('sid', 'เลขที่รายการ เช่น DON-2569-000001')}
+    ${field('sph', 'เบอร์โทรศัพท์ที่ใช้ทำรายการ', 'tel')}
+    <button class="btn" onclick="doS()">🔍 ค้นหา</button>
+    <div id="sr"></div>
+  </div>`;
 }
-async function delC(s, id) { if (await sure('ลบรายการนี้?')) { await call('deleteRec', [TK, s, id]); done(); } }
-async function editU(u) {
-  const x = u ? UU.find(a => a.user === u) : {};
-  const v = await form(u ? 'แก้ไขผู้ดูแล' : 'เพิ่มผู้ดูแล', [{ k: 'user', l: 'ชื่อผู้ใช้' }, { k: 'name', l: 'ชื่อ-สกุล' }, { k: 'role', l: 'สิทธิ์', h: 'Super / Finance / Merchandise / Event / Viewer' }, { k: 'pass', l: 'รหัสผ่าน', t: 'password', h: u ? 'เว้นว่าง = ไม่เปลี่ยน' : '' }], x);
-  if (v) { await call('saveUser', [TK, v]); adm(); }
+
+const srRow = (ic, g, l, v, w = '') => `<div class="flex items-start gap-3 rounded-2xl p-3 ${w}" style="background:var(--bg);border:1px solid var(--bd)"><span class="ni lg" style="--g:${g};font-size:1rem">${ic}</span><div class="min-w-0 flex-1"><div class="text-xs" style="color:var(--mut)">${l}</div><div class="font-semibold break-words">${v}</div></div></div>`;
+const srSteps = s => {
+  const a = [
+    ['📝', 'ส่งข้อมูล', '#4A2C6D', 1],
+    ['🔍', 'ตรวจสอบสลิป', s == 'wait' ? '#F57C00' : '#4A2C6D', 1],
+    s == 'ok' ? ['✅', 'ยืนยันแล้ว', '#26A69A', 1] : s == 'no' ? ['❌', 'ไม่ผ่าน', '#D32F2F', 1] : ['🏁', 'ยืนยัน', '#B8AEC4', 0]
+  ];
+  return `<div class="flex items-start justify-center">${a.map((x, i) => `${i ? '<div class="flex-1 mt-5 h-1 rounded-full" style="background:' + (x[3] ? x[2] : 'var(--bd)') + '"></div>' : ''}<div class="text-center" style="width:68px"><div class="mx-auto grid place-items-center rounded-full text-lg" style="width:42px;height:42px;background:${x[3] ? x[2] : 'var(--bd)'};box-shadow:${x[3] ? '0 4px 10px ' + x[2] + '66' : 'none'};${s == 'wait' && i == 1 ? 'outline:3px solid #F57C0055;outline-offset:2px' : ''}">${x[0]}</div><div class="text-[11px] mt-1 font-semibold" style="color:${x[3] ? x[2] : 'var(--mut)'}">${x[1]}</div></div>`).join('')}</div>`;
+};
+
+const srCard = r => {
+  const s = r.status;
+  const B = {
+    ok: ['#26A69A', '#66BB6A', '✅', 'ยืนยันรายการเรียบร้อยแล้ว', 'ขอบคุณที่ร่วมเป็นส่วนหนึ่งในการสนับสนุนการศึกษา'],
+    wait: ['#F57C00', '#FFB300', '⏳', 'รอเจ้าหน้าที่ตรวจสอบ', 'ระบบได้รับข้อมูลและสลิปแล้ว กรุณารอการยืนยัน'],
+    no: ['#D32F2F', '#FF7043', '❌', 'รายการไม่ผ่านการตรวจสอบ', r.reason ? 'เหตุผล: ' + r.reason : 'กรุณาติดต่อเจ้าหน้าที่ของโรงเรียน']
+  }[s] || ['#7a6b88', '#b3a3c4', 'ℹ️', 'ไม่ทราบสถานะ', ''];
+
+  const G1 = 'linear-gradient(145deg,#4A2C6D,#8a5cc4)',
+        G2 = 'linear-gradient(145deg,#0288D1,#4A2C6D)',
+        G3 = 'linear-gradient(145deg,#26A69A,#0288D1)',
+        G4 = 'linear-gradient(145deg,#FBC02D,#FF8A65)',
+        G5 = 'linear-gradient(145deg,#db0862,#ff5c9a)';
+
+  let rows = srRow('👤', G1, 'ผู้ทำรายการ', r.name + (r.org && r.org != '-' ? ' <span style="color:var(--mut);font-weight:500">(' + r.org + ')</span>' : ''))
+           + srRow('📞', G2, 'เบอร์โทรศัพท์', r.phone)
+           + srRow('🕒', G3, 'วันเวลาที่ทำรายการ', new Date(r.at).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }));
+
+  if (r.kd == 'don') {
+    rows += srRow('🏷️', G4, 'ประเภทผู้บริจาค', r.type) + (r.wish ? srRow('💌', G5, 'ข้อความอวยพร', r.wish, 'sm:col-span-2') : '');
+  }
+  if (r.kd == 'tbl') {
+    rows += srRow('🪑', G4, 'โต๊ะที่จอง', 'โต๊ะ ' + r.t) + srRow('👥', G5, 'จำนวนผู้เข้าร่วม', r.pax + ' คน');
+  }
+  if (r.kd == 'ord') {
+    rows += srRow('🚚', G4, 'วิธีรับสินค้า', r.method || '-')
+         + `<div class="rounded-2xl p-3 sm:col-span-2" style="background:var(--bg);border:1px solid var(--bd)"><div class="text-xs mb-2" style="color:var(--mut)">🛍️ รายการสินค้า</div><div class="grid gap-2">${r.items.map(i => `<div class="flex items-center justify-between gap-2 flex-wrap"><b>${i.p}</b><span class="flex gap-1 flex-wrap">${i.c && i.c != '-' ? '<span class="badge" style="background:' + (i.c == 'แสด' ? '#FF8A65' : '#4A2C6D') + '">' + i.c + '</span>' : ''}<span class="badge" style="background:#0288D1">ไซซ์ ${i.s}</span><span class="badge" style="background:#26A69A">× ${i.q}</span><span class="badge" style="background:#db0862">${fm(i.q * i.price)} ฿</span></span></div>`).join('')}</div></div>`
+         + (r.addr ? srRow('📍', G5, 'ที่อยู่จัดส่ง', r.addr + ' <span style="color:var(--mut);font-weight:500">(รวมค่าจัดส่ง ' + r.ship + ' บาท)</span>', 'sm:col-span-2') : '');
+  }
+
+  return `<div class="rounded-3xl overflow-hidden fade mt-4" style="border:1px solid var(--bd);box-shadow:0 10px 30px rgba(74,44,109,.15)">
+    <div class="p-4 text-white flex items-center gap-3" style="background:${r.col}">
+      <span class="ico" style="background:rgba(255,255,255,.22)">${r.ic}</span>
+      <div class="min-w-0">
+        <div class="text-xs opacity-90">${r.k}</div>
+        <div class="font-bold text-lg break-all">${r.id}</div>
+      </div>
+    </div>
+    <div class="p-4 text-center text-white" style="background:linear-gradient(135deg,${B[0]},${B[1]})">
+      <div class="text-3xl">${B[2]}</div>
+      <b class="text-lg">${B[3]}</b>
+      <div class="text-sm opacity-95">${B[4]}</div>
+    </div>
+    <div class="p-4 grid gap-3" style="background:var(--card)">
+      <div class="rounded-2xl p-3" style="background:var(--bg)">${srSteps(s)}</div>
+      <div class="rounded-2xl p-4 text-center" style="background:linear-gradient(135deg,#FFF1F6,#FFF8E1);border:2px dashed #db0862">
+        <div class="text-xs" style="color:#7a6b88">${r.kd == 'don' ? 'ยอดบริจาค' : 'ยอดรวมสุทธิ'}</div>
+        <div class="text-3xl font-bold" style="color:#db0862">${fm(r.amt)} <span class="text-base">บาท</span></div>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-2 text-left">${rows}</div>
+      ${s == 'ok' && r.kd == 'don' ? `<button class="btn mt-2" onclick="receipt('${r.id}')">📄 ดาวน์โหลดใบรับเงินบริจาค (PDF)</button>` : ''}
+    </div>
+  </div>`;
+};
+
+async function doS() {
+  const sid = $('#sid'), sph = $('#sph');
+  const id = sid.value.trim(), ph = sph.value.trim();
+  if (!id || !ph) return toast('กรุณากรอกเลขที่รายการและเบอร์โทรศัพท์', 'warning');
+
+  const x = await busy(() => rpc('searchItem', id, ph));
+  if (!x.ok) {
+    $('#sr').innerHTML = '<div class="rounded-3xl p-6 text-center fade mt-4" style="background:linear-gradient(135deg,#FFEBEE,#FFF3E0);border:2px dashed #EF5350;color:#C62828"><div class="text-4xl">🔍</div><b class="text-lg">ไม่พบรายการ</b><div class="text-sm mt-1">กรุณาตรวจสอบเลขที่รายการและเบอร์โทรศัพท์ให้ตรงกับตอนทำรายการ</div></div>';
+    return;
+  }
+
+  const M = {
+    don: ['💰 รายการบริจาค', '💰', 'linear-gradient(135deg,#db0862,#ff5c9a)'],
+    ord: ['👕 รายการสั่งซื้อของที่ระลึก', '👕', 'linear-gradient(135deg,#f57c00,#FF8A65)'],
+    tbl: ['🪑 จองโต๊ะ', '🪑', 'linear-gradient(135deg,#26A69A,#0288D1)']
+  };
+
+  const r = x.rec;
+  if (r) {
+    const m = M[r.kd];
+    LAST = r;
+    r.k = r.kd == 'tbl' ? m[0] + ' ' + r.t : m[0];
+    r.ic = m[1];
+    r.col = m[2];
+  }
+  $('#sr').innerHTML = r ? srCard(r) : '';
 }
-async function delU(u) { if (await sure('ลบผู้ดูแลนี้?')) { await call('deleteUser', [TK, u]); adm(); } }
-async function editSet() {
-  const c = CC;
-  const v = await form('⚙️ ตั้งค่าระบบ', [{ k: 'name', l: 'ชื่อระบบ' }, { k: 'sub', l: 'ชื่องาน' }, { k: 'target', l: 'เป้าหมายเงินบริจาค', t: 'number' }, { k: 'obj', l: 'วัตถุประสงค์การระดมทุน', t: 'textarea' }, { k: 'pp', l: 'เบอร์/เลข PromptPay' }, { k: 'tgToken', l: 'Telegram Bot Token' }, { k: 'tgChat', l: 'Telegram Chat ID ผู้ดูแล' }, { k: 'newPass', l: 'รหัสผ่านใหม่ของคุณ', t: 'password', h: 'เว้นว่าง = ไม่เปลี่ยน' }, { k: 'logo', l: 'โลโก้ระบบ', t: 'file' }, { k: 'banner', l: 'ภาพส่วนหัว', t: 'file' }, { k: 'qr', l: 'รูป QR PromptPay', t: 'file' }],
-    { name: c.SystemName, sub: c.Subtitle, target: c.Target, obj: c.Objective, pp: c.PromptPay, tgToken: c.TelegramToken, tgChat: c.TelegramChat });
-  if (v) { await call('saveSettings', [TK, v]); done(); }
+
+function pdf(title, body) {
+  const w = window.open('', '_blank');
+  if (!w) return toast('เบราว์เซอร์บล็อกหน้าต่างป็อปอัป กรุณาอนุญาต pop-up', 'warning');
+  w.document.write(`<html><head><meta charset="utf-8"><title>${title}</title><link href="https://fonts.googleapis.com/css2?family=Sarabun&display=swap" rel="stylesheet"><style>body{font-family:Sarabun,sans-serif;padding:30px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:6px;text-align:left}h2,h3{text-align:center;color:#4A2C6D}</style></head><body>${body}<script>setTimeout(()=>window.print(),600)<\/script></body></html>`);
+  w.document.close();
 }
-function pdfRpt() {
-  const R = RR, s = t => R.filter(r => r.st === t).reduce((a, r) => a + r.amt, 0);
-  printHtml(`<html><head><meta charset="utf-8"><style>*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font-family:Sarabun,sans-serif}table{border-collapse:collapse;width:100%}td,th{border:1px solid #999;padding:5px}th{background:#4a2c6d;color:#fff}tr:nth-child(even) td{background:#f6f0fa}h2,h3{text-align:center;color:#4a2c6d}</style></head><body><h2>รายงานผ้าป่าเพื่อการศึกษา</h2><h3>โรงเรียนร่มเกล้าพิทยาสรรค์</h3><p>ยืนยันแล้ว ${fm(s('ok'))} บาท · รอตรวจสอบ ${fm(s('wait'))} บาท · ${R.length} รายการ</p><table><tr><th>วันที่</th><th>เลขที่</th><th>ประเภท</th><th>ผู้ทำรายการ</th><th>รายละเอียด</th><th>จำนวนเงิน</th><th>สถานะ</th></tr>${R.map(r => `<tr><td>${dt(r.at)}</td><td>${esc(r.id)}</td><td>${r.k}</td><td>${esc(r.who)}</td><td>${esc(r.det)}</td><td align="right">${fm(r.amt)}</td><td>${ST[r.st][0]}</td></tr>`).join('')}</table></body></html>`);
+
+function receipt(id) {
+  const d = [LAST, ...S.don].find(x => x && x.id == id);
+  if (!d) return toast('ไม่พบข้อมูลสำหรับออกใบรับเงิน', 'warning');
+  pdf('ใบรับเงิน ' + id, `<h2>ใบรับเงินบริจาคเพื่อการศึกษา</h2><h3>โรงเรียนร่มเกล้าพิทยาสรรค์<br>สำนักงานเขตพื้นที่การศึกษามัธยมศึกษามุกดาหาร</h3><p>เลขที่ ${d.id}</p><p>ผู้บริจาค: ${d.name}</p><p>จำนวนเงิน: ${fm(d.amount || d.amt)} บาท</p><p>วัตถุประสงค์: สมทบทุนเพื่อการศึกษา</p><p>วันที่: ${new Date(d.at).toLocaleDateString('th-TH')}</p>`);
 }
-boot();
+
+function loginUI() {
+  return `<div class="min-h-screen grid place-items-center p-4" style="background:linear-gradient(135deg,#4A2C6D,#db0862)">
+    <div class="card p-6 w-full max-w-sm grid gap-3 text-center">
+      <div class="ico mx-auto" style="background:#4A2C6D;width:60px;height:60px">🔑</div>
+      <h2 class="text-xl font-bold">เข้าสู่ระบบ Admin</h2>
+      ${field('lu', 'ชื่อผู้ใช้', 'text', 'value="admin"')}
+      ${field('lp', 'รหัสผ่าน (ค่าเริ่มต้น: admin1234)', 'password', 'placeholder="รหัสผ่าน"')}
+      <button class="btn" onclick="login()">🔓 เข้าสู่ระบบ</button>
+      <button class="btn alt" onclick="go('home')">← กลับหน้าแรก</button>
+    </div>
+  </div>`;
+}
+
+async function login() {
+  const lu = $('#lu'), lp = $('#lp');
+  const r = await busy(() => rpc('adminLogin', lu.value.trim(), lp.value));
+  if (!r.ok) return toast(r.msg || 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
+  TK = r.token;
+  A = true;
+  try { sessionStorage.setItem('rk_t', TK); } catch (e) {}
+  const a = await busy(loadAdmin);
+  if (!a.ok) errT(a, 'โหลดข้อมูลไม่สำเร็จ');
+  draw();
+}
+
+async function logout() {
+  const r = await Swal.fire({
+    icon: 'question',
+    title: 'ออกจากระบบ?',
+    showCancelButton: true,
+    confirmButtonColor: '#db0862',
+    confirmButtonText: 'ออกจากระบบ',
+    cancelButtonText: 'ยกเลิก'
+  });
+  if (r.isConfirmed) {
+    const t = TK;
+    A = false;
+    TK = '';
+    try { sessionStorage.removeItem('rk_t'); } catch (e) {}
+    rpc('adminLogout', t);
+    await busy(loadPublic);
+    go('home');
+  }
+}
+
+const P = {
+  dash: '<path d="M3 13h8V3H3zM13 21h8V11h-8zM13 3v6h8V3zM3 21h8v-6H3z"/>',
+  pend: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/>',
+  prod: '<path d="M6 7h12l1 13H5zM9 7a3 3 0 016 0"/>',
+  tabs: '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+  sch: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>',
+  news: '<path d="M4 5h13a2 2 0 012 2v12H6a2 2 0 01-2-2zM8 9h7M8 13h7"/>',
+  set: '<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',
+  home: '<path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z"/>',
+  out: '<path d="M9 4H5a2 2 0 00-2 2v12a2 2 0 002 2h4M16 8l4 4-4 4M20 12H9"/>',
+  rpt: '<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7"/>',
+  donate: '<path d="M12 21s-7-4.4-9-9a5 5 0 019-3 5 5 0 019 3c-2 4.6-9 9-9 9z"/>',
+  shop: '<path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 016 0v2"/>',
+  table: '<circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+  key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/>'
+};
+
+const G = {
+  dash: 'linear-gradient(145deg,#4A2C6D,#8a5cc4)',
+  pend: 'linear-gradient(145deg,#db0862,#ff5c9a)',
+  prod: 'linear-gradient(145deg,#f57c00,#FF8A65)',
+  tabs: 'linear-gradient(145deg,#26A69A,#0288D1)',
+  sch: 'linear-gradient(145deg,#0288D1,#4A2C6D)',
+  news: 'linear-gradient(145deg,#FBC02D,#FF8A65)',
+  set: 'linear-gradient(145deg,#4A2C6D,#26A69A)',
+  home: 'linear-gradient(145deg,#db0862,#FF8A65)',
+  out: 'linear-gradient(145deg,#546e7a,#263238)',
+  rpt: 'linear-gradient(145deg,#db0862,#4A2C6D)',
+  donate: 'linear-gradient(145deg,#db0862,#ff5c9a)',
+  shop: 'linear-gradient(145deg,#f57c00,#FF8A65)',
+  table: 'linear-gradient(145deg,#26A69A,#0288D1)',
+  search: 'linear-gradient(145deg,#0288D1,#4A2C6D)',
+  key: 'linear-gradient(145deg,#4A2C6D,#db0862)'
+};
+
+const SV = k => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))">${P[k] || ''}</svg>`;
+const IC = (k, l = '') => `<span class="ni ${l}" style="--g:${G[k]}"><svg viewBox="0 0 24 24" width="${l ? 22 : 19}" height="${l ? 22 : 19}" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))">${P[k] || ''}</svg></span>`;
+
+const AN = [
+  ['dash', '📊', 'แดชบอร์ด'],
+  ['pend', '🧾', 'ตรวจสอบการชำระเงิน'],
+  ['rpt', '📑', 'รายงาน & Export'],
+  ['prod', '👕', 'สินค้า & สต็อก'],
+  ['tabs', '🪑', 'โต๊ะ & ผัง'],
+  ['sch', '📅', 'กำหนดการ & วัตถุประสงค์'],
+  ['news', '📰', 'ข่าวประชาสัมพันธ์'],
+  ['set', '⚙️', 'ตั้งค่าระบบ']
+];
+
+function adminUI() {
+  return `<div class="flex min-h-screen">
+    <aside class="fixed md:sticky top-0 h-screen w-64 card z-50 p-4 grid content-start gap-1 transition-transform ${menu ? '' : '-translate-x-full md:translate-x-0'}" style="border-radius:0 22px 22px 0">
+      <div class="flex items-center gap-2 mb-3">
+        ${logo()}
+        <b class="text-sm leading-tight">${S.cfg.name}</b>
+      </div>
+      ${AN.map(n => `<a class="nav-a ${AT == n[0] ? 'on' : ''}" onclick="navA('${n[0]}')">${IC(n[0])} ${n[2]}</a>`).join('')}
+      <div style="height:3px;border-radius:9px;margin:.7rem 0;background:linear-gradient(90deg,#4A2C6D,#db0862,#FF8A65)"></div>
+      <a class="nav-a" onclick="go('home')">${IC('home')} หน้าเว็บไซต์</a>
+      <a class="nav-a" onclick="logout()">${IC('out')} ออกจากระบบ</a>
+    </aside>
+    <div class="flex-1 min-w-0">
+      <div class="md:hidden sticky top-0 z-40 p-3 flex gap-3 items-center card" style="border-radius:0">
+        <button class="btn !py-1 !px-2.5" onclick="menu=!menu;draw()">☰</button>
+        <b>${(AN.find(n => n[0] == AT) || {})[2]}</b>
+      </div>
+      <main class="p-4 md:p-6 pb-24 fade" id="am"></main>
+    </div>
+  </div>`;
+}
+
+function adminInit() {
+  const m = $('#am'), s = stats();
+  if (AT == 'dash') {
+    const dd = {};
+    S.don.filter(d => d.status == 'ok').forEach(d => {
+      const k = new Date(d.at).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
+      dd[k] = (dd[k] || 0) + d.amount;
+    });
+    const ty = {};
+    S.don.filter(d => d.status == 'ok').forEach(d => ty[d.type] = (ty[d.type] || 0) + 1);
+
+    m.innerHTML = `<div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      ${[['💰', 'เงินบริจาค', fm(s.sum) + ' บาท', '#db0862'], ['🪑', 'โต๊ะ', s.tb + ' / ' + s.tbl, '#26A69A'], ['👕', 'ผู้สั่งสินค้า', S.ord.length + ' ราย', '#FF8A65'], ['👥', 'ผู้ร่วมงาน', S.tbl.filter(t => t.status != 'no').reduce((a, t) => a + t.pax, 0) + ' คน', '#4A2C6D']].map(c => `<div class="card p-4 flex gap-3 items-center"><span class="ico" style="background:${c[3]}">${c[0]}</span><div><div class="lbl !mb-0">${c[1]}</div><b class="text-lg">${c[2]}</b></div></div>`).join('')}
+    </div>
+    <div class="grid lg:grid-cols-2 gap-4 mt-4">
+      ${[['ยอดบริจาครายวัน', 'a1'], ['ผู้บริจาคแยกตามประเภท', 'a2'], ['สินค้าขายดี', 'a3'], ['ขนาดเสื้อที่ถูกจอง', 'a4']].map(c => `<div class="card p-4"><b>${c[0]}</b><div style="height:240px"><canvas id="${c[1]}"></canvas></div></div>`).join('')}
+    </div>
+    <button class="btn mt-4" onclick="AT='rpt';draw()">📄 Export รายงานสรุป</button>`;
+
+    mk('a1', 'bar', Object.keys(dd), Object.values(dd), '#db0862');
+    mk('a2', 'doughnut', Object.keys(ty), Object.values(ty), PAL);
+    const pr = S.prods.map(p => [p.name + ' ' + (p.color == '-' ? '' : p.color), Object.values(p.sz).reduce((a, z) => a + z.s, 0)]);
+    mk('a3', 'bar', pr.map(x => x[0]), pr.map(x => x[1]), '#4A2C6D');
+    const zs = {};
+    S.prods.forEach(p => Object.entries(p.sz).forEach(([k, z]) => zs[k] = (zs[k] || 0) + z.s));
+    mk('a4', 'bar', Object.keys(zs), Object.values(zs), '#FF8A65');
+  }
+
+  if (AT == 'pend') {
+    const L = [
+      ...S.don.map(x => ({ ...x, k: 'บริจาค', amt: x.amount })),
+      ...S.ord.map(x => ({ ...x, k: 'เสื้อ/สินค้า', amt: x.total })),
+      ...S.tbl.map(x => ({ ...x, k: 'โต๊ะ', amt: x.total }))
+    ].sort((a, b) => b.at - a.at);
+
+    m.innerHTML = `<div class="card p-4">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-lg font-bold">🧾 รายการตรวจสอบการชำระเงิน (${L.length} รายการ)</h2>
+      </div>
+      <div class="tw">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left" style="color:var(--mut)">
+              <th class="p-2">เลขที่</th><th>ประเภท</th><th>ผู้ทำรายการ</th><th>จำนวน</th><th>สถานะ</th><th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${L.map(x => `<tr class="border-t" style="border-color:var(--bd)"><td class="p-2 whitespace-nowrap font-mono font-semibold">${x.id}</td><td>${x.k}</td><td>${x.name}</td><td>${fm(x.amt)}</td><td>${stBadge(x.status)}</td><td class="whitespace-nowrap"><button class="btn !py-1 !px-3" onclick="review('${x.id}')">ดูรายละเอียด</button>${x.k == 'บริจาค' && x.status == 'ok' ? ' <button class="btn alt !py-1 !px-3" onclick="receipt(\'' + x.id + '\')">🧾</button>' : ''}</td></tr>`).join('') || '<tr><td colspan="6" class="p-4 text-center" style="color:var(--mut)">ไม่มีรายการ</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  }
+
+  if (AT == 'prod') {
+    m.innerHTML = `<div class="flex justify-between items-center mb-3">
+      <h2 class="text-xl font-bold">สินค้า & สต็อกของที่ระลึก</h2>
+      <button class="btn" onclick="editP()">➕ เพิ่มสินค้า</button>
+    </div>
+    <div class="card p-4">
+      <div class="tw">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left" style="color:var(--mut)"><th class="p-2">สินค้า</th><th>ราคา</th><th>ไซซ์ (จองแล้ว/ทั้งหมด)</th><th>จัดการ</th></tr>
+          </thead>
+          <tbody>
+            ${S.prods.map(p => `<tr class="border-t" style="border-color:var(--bd)"><td class="p-2">${p.emoji} ${p.name} ${p.color != '-' ? p.color : ''}</td><td>${fm(p.price)}</td><td>${Object.entries(p.sz).map(([k, z]) => `<span class="badge m-0.5" style="background:${z.n - z.s <= 0 ? '#EF5350' : '#26A69A'}">${k} ${z.s}/${z.n}</span>`).join('')}</td><td class="whitespace-nowrap"><button class="btn alt !py-1 !px-3" onclick="editP(${p.id})">✏️</button> <button class="btn !py-1 !px-3" style="background:#D32F2F" onclick="delP(${p.id})">🗑️</button></td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  }
+
+  if (AT == 'rpt') { rptUI(m); return; }
+  if (AT == 'sch') { schUI(m); return; }
+  if (AT == 'tabs') { tabsUI(m); return; }
+
+  if (AT == 'news') {
+    m.innerHTML = `<div class="flex justify-between items-center mb-3">
+      <h2 class="text-xl font-bold">ข่าวประชาสัมพันธ์</h2>
+      <button class="btn" onclick="editN()">➕ เพิ่มข่าว</button>
+    </div>
+    ${S.news.map(n => `<div class="card p-3 mb-2 flex gap-3 items-center">${n.img ? '<img src="' + n.img + '" class="w-20 h-20 rounded-2xl object-cover">' : '<div class="ico !w-20 !h-20 !text-3xl" style="background:#FF8A65">📰</div>'}<div class="flex-1 min-w-0"><b>${n.t}</b><div class="text-xs" style="color:var(--pri)">${new Date(n.at).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' })}</div><div class="text-sm truncate" style="color:var(--mut)">${n.d}</div></div><button class="btn alt !px-3" onclick="editN(${n.id})">✏️</button><button class="btn !px-3" style="background:#D32F2F" onclick="delN(${n.id})">🗑️</button></div>`).join('') || '<div class="card p-5" style="color:var(--mut)">ยังไม่มีข่าว</div>'}`;
+  }
+
+  if (AT == 'set') {
+    m.innerHTML = `<div class="grid md:grid-cols-2 gap-4">
+      <div class="card p-5 grid gap-3 content-start">
+        <h3 class="font-bold text-base">🎨 ข้อมูลงาน & ภาพลักษณ์</h3>
+        ${field('cn', 'ชื่อระบบ', 'text', 'value="' + S.cfg.name + '"')}
+        ${field('cs', 'ชื่องาน / สโลแกน', 'text', 'value="' + S.cfg.sub + '"')}
+        ${field('ct', 'เป้าหมายเงินบริจาค (บาท)', 'number', 'value="' + S.cfg.target + '"')}
+        <div><label class="lbl">โลโก้ (อัปโหลดไฟล์)</label><input id="cl" type="file" accept="image/*" class="inp"></div>
+        <div><label class="lbl">ภาพส่วนหัวแบนเนอร์ (อัปโหลดไฟล์)</label><input id="cb" type="file" accept="image/*" class="inp"></div>
+      </div>
+      <div class="card p-5 grid gap-3 content-start">
+        <h3 class="font-bold text-base">💳 การชำระเงิน PromptPay</h3>
+        ${field('cp', 'เบอร์ / เลขประจำตัว PromptPay', 'text', 'value="' + S.cfg.pp + '"')}
+        <div><label class="lbl">รูปภาพ QR PromptPay (อัปโหลด)</label><input id="cq" type="file" accept="image/*" class="inp"></div>
+        <h3 class="font-bold mt-2 text-base">✈️ แจ้งเตือน Telegram Bot</h3>
+        ${field('tk', 'Bot Token (จาก @BotFather)', 'text', 'value="' + (S.cfg.tgToken || '') + '"')}
+        ${field('tc', 'Chat ID ผู้รับแจ้งเตือน (จาก @userinfobot)', 'text', 'value="' + (S.cfg.tgChat || '') + '"')}
+        <h3 class="font-bold mt-2 text-base">🔐 เปลี่ยนรหัสผ่าน Admin</h3>
+        ${field('cw', 'รหัสผ่านใหม่ (เว้นว่างหากไม่ต้องการเปลี่ยน)', 'password')}
+      </div>
+    </div>
+    <div class="flex gap-2 flex-wrap mt-4">
+      <button class="btn" onclick="saveSet()">💾 บันทึกการตั้งค่า</button>
+      <button class="btn alt" style="color:#D32F2F" onclick="resetAll()">🗑️ ล้างข้อมูลรายการทั้งหมด</button>
+    </div>`;
+  }
+}
+
+async function saveSet() {
+  const cn = $('#cn'), cs = $('#cs'), ct = $('#ct'), cp = $('#cp'), tk = $('#tk'), tc = $('#tc'), cw = $('#cw');
+  const r = await busy(async () => {
+    const c = {
+      name: cn.value,
+      sub: cs.value,
+      target: +ct.value || S.cfg.target,
+      pp: cp.value,
+      tgToken: tk.value,
+      tgChat: tc.value
+    };
+    for (const [i, k] of [['cl', 'logo'], ['cb', 'banner'], ['cq', 'ppImg']]) {
+      const f = $('#' + i);
+      if (f && f.files && f.files[0]) {
+        c[k] = await fileURL(f.files[0]);
+      }
+    }
+    const a = await rpc('adminSaveConfig', TK, c, cw.value);
+    if (a.ok) await loadAdmin();
+    return a;
+  });
+  if (!r.ok) return errT(r, 'บันทึกไม่สำเร็จ');
+  toast('บันทึกการตั้งค่าเรียบร้อย');
+  draw();
+}
+
+async function resetAll() {
+  const r = await Swal.fire({
+    icon: 'warning',
+    title: 'ล้างข้อมูลรายการทั้งหมด?',
+    html: 'จะลบ <b>รายการบริจาค / สั่งซื้อ / จองโต๊ะ</b> ทั้งหมด และรีเซ็ตสต็อกคงเหลือ<br>พิมพ์คำว่า <b>ลบ</b> เพื่อยืนยัน',
+    input: 'text',
+    showCancelButton: true,
+    confirmButtonColor: '#D32F2F',
+    confirmButtonText: 'ล้างข้อมูล',
+    cancelButtonText: 'ยกเลิก',
+    preConfirm: v => {
+      if ((v || '').trim() != 'ลบ') {
+        Swal.showValidationMessage('กรุณาพิมพ์คำว่า ลบ');
+        return false;
+      }
+      return true;
+    }
+  });
+  if (!r.isConfirmed) return;
+  const a = await busy(async () => {
+    const x = await rpc('adminResetAll', TK, 'RESET');
+    if (x.ok) await loadAdmin();
+    return x;
+  });
+  if (!a.ok) return errT(a, 'ไม่สำเร็จ');
+  toast('ล้างข้อมูลเรียบร้อยแล้ว');
+  draw();
+}
+
+async function doReview(id, act, reason) {
+  const r = await busy(async () => {
+    const a = await rpc('adminReview', TK, id, act, reason || '');
+    if (a.ok) await loadAdmin();
+    return a;
+  });
+  if (!r.ok) return errT(r, 'ไม่สำเร็จ');
+  toast(act == 'ok' ? 'ยืนยันรายการแล้ว' : 'ปฏิเสธรายการแล้ว');
+  draw();
+}
+
+async function review(id) {
+  const x = [...S.don, ...S.ord, ...S.tbl].find(v => v.id == id);
+  if (!x) return toast('ไม่พบรายการ', 'error');
+  let sl = '';
+  if (x.slip) {
+    const q = await busy(() => rpc('adminGetSlip', TK, x.slip));
+    if (q.ok) sl = q.data;
+  }
+  const r = await Swal.fire({
+    title: id,
+    html: `<div class="text-left text-sm">
+      ผู้ทำรายการ: <b>${x.name}</b><br>
+      โทรศัพท์: <b>${x.phone}</b><br>
+      จำนวนเงิน: <b style="color:#db0862">${fm(x.amount || x.total)} บาท</b><br>
+      วันเวลา: ${new Date(x.at).toLocaleString('th-TH')}<br>
+      ${x.addr ? 'ที่อยู่จัดส่ง: ' + x.addr + ' (รวมค่าส่ง ' + x.ship + ' บาท)<br>' : ''}
+      ${x.reason ? '<span style="color:#D32F2F">เหตุผลที่ไม่อนุมัติ: ' + x.reason + '</span><br>' : ''}
+      ${sl ? '<div class="mt-2 text-center"><img src="' + sl + '" style="max-height:260px;margin:8px auto;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)"></div>' : '<i class="text-xs" style="color:var(--mut)">ไม่มีรูปสลิปแนบ</i>'}
+    </div>`,
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: '✅ ยืนยันถูกต้อง',
+    denyButtonText: '❌ ไม่อนุมัติ',
+    cancelButtonText: 'ปิด',
+    confirmButtonColor: '#26A69A',
+    denyButtonColor: '#D32F2F'
+  });
+
+  if (r.isConfirmed) await doReview(id, 'ok', '');
+  else if (r.isDenied) {
+    const q = await Swal.fire({
+      title: 'เหตุผลที่ไม่อนุมัติ',
+      input: 'text',
+      inputPlaceholder: 'เช่น สลิปไม่ชัดเจน, ยอดเงินไม่ตรง',
+      showCancelButton: true,
+      confirmButtonColor: '#D32F2F'
+    });
+    if (q.isConfirmed) await doReview(id, 'no', q.value || '');
+  }
+}
+
+const szRow = (k, n, s) => `<div class="szrow" data-s="${s}" style="display:grid;grid-template-columns:1.2fr 1fr .9fr auto;gap:.5rem;align-items:center;margin-top:.45rem">
+  <input class="inp szk" placeholder="เช่น M" value="${k}">
+  <input class="inp szn" type="number" min="0" placeholder="จำนวน" value="${n}">
+  <span class="badge" style="background:#0288D1;text-align:center">จองแล้ว ${s}</span>
+  <button type="button" title="ลบไซซ์นี้" onclick="this.parentElement.remove()" style="border-radius:12px;padding:.35rem .6rem;background:#D32F2F;color:#fff">🗑️</button>
+</div>`;
+
+const addSz = (k = '', n = 0, s = 0) => {
+  const el = $('#szr');
+  if (el) el.insertAdjacentHTML('beforeend', szRow(k, n, s));
+};
+
+const addPre = () => {
+  const have = [...document.querySelectorAll('#szr .szk')].map(i => i.value.trim());
+  ['S', 'M', 'L', 'XL', '2XL'].forEach(z => {
+    if (!have.includes(z)) addSz(z, 50);
+  });
+};
+
+function editP(id) {
+  const p = id ? S.prods.find(x => x.id == id) : { name: '', color: '-', price: 0, emoji: '🛍️', img: '', sz: {} };
+  const L = (t, h, inner) => `<div style="text-align:left;margin-top:.8rem"><label style="font-weight:700;font-size:.92rem">${t}</label>${h ? '<div style="font-size:.78rem;color:var(--mut)">' + h + '</div>' : ''}<div style="margin-top:.3rem">${inner}</div></div>`;
+
+  Swal.fire({
+    width: 'min(640px,94vw)',
+    title: id ? '✏️ แก้ไขสินค้า' : '➕ เพิ่มสินค้าใหม่',
+    html: `<div style="max-height:62vh;overflow-y:auto;padding:0 .3rem">
+      ${L('1) ชื่อสินค้า', 'เช่น เสื้อผ้าป่า, แก้วที่ระลึก', '<input id="pn" class="inp" value="' + p.name + '">')}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
+        ${L('2) สี', 'ใส่ - หากไม่มีตัวเลือกสี', '<input id="pc" class="inp" placeholder="เช่น ม่วง" value="' + p.color + '">')}
+        ${L('3) ราคาต่อชิ้น (บาท)', 'ตัวเลขเท่านั้น', '<input id="pr" type="number" min="0" class="inp" value="' + p.price + '">')}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:.7rem">
+        ${L('4) ไอคอน Emoji', 'ใช้แทนรูปถ้าไม่อัปโหลด', '<input id="pe" class="inp" maxlength="4" value="' + (p.emoji || '🛍️') + '">')}
+        ${L('5) รูปภาพสินค้า', 'เลือกไฟล์ใหม่เพื่อเปลี่ยนรูป', '<div style="display:flex;gap:.6rem;align-items:center"><div id="pvb" style="width:52px;height:52px;flex:none;border-radius:14px;background:var(--bg);display:grid;place-items:center;font-size:1.6rem;overflow:hidden">' + (p.img ? '<img src="' + p.img + '" style="width:100%;height:100%;object-fit:cover">' : (p.emoji || '🛍️')) + '</div><input id="pi" type="file" accept="image/*" class="inp" onchange="fileURL(this.files[0]).then(u=>{if(u)document.getElementById(&quot;pvb&quot;).innerHTML=&quot;<img src=&apos;&quot;+u+&quot;&apos; style=&apos;width:100%;height:100%;object-fit:cover&apos;>&quot;})"></div>')}
+      </div>
+      ${L('6) ไซซ์ & สต็อก', 'คงเหลือ = จำนวนทั้งหมด − จองแล้ว', '<div style="display:grid;grid-template-columns:1.2fr 1fr .9fr auto;gap:.5rem;font-size:.76rem;color:var(--mut);font-weight:600"><span>ชื่อไซซ์</span><span>จำนวนทั้งหมด</span><span>จองแล้ว</span><span>ลบ</span></div><div id="szr">' + Object.entries(p.sz).map(([k, z]) => szRow(k, z.n, z.s)).join('') + '</div><div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem"><button type="button" class="btn text-xs" onclick="addSz()">➕ เพิ่มไซซ์</button><button type="button" class="btn alt text-xs" onclick="addPre()">📏 เพิ่ม S M L XL 2XL</button><button type="button" class="btn alt text-xs" onclick="addSz(&quot;ฟรีไซซ์&quot;,50)">ฟรีไซซ์</button></div>')}
+    </div>`,
+    showCancelButton: true,
+    confirmButtonColor: '#db0862',
+    confirmButtonText: '💾 บันทึก',
+    cancelButtonText: 'ยกเลิก',
+    preConfirm: async () => {
+      const pn = $('#pn'), pc = $('#pc'), pr = $('#pr'), pe = $('#pe'), pi = $('#pi');
+      const n = pn.value.trim(), pr0 = +pr.value;
+      const sz = [...document.querySelectorAll('#szr .szrow')].map(r => ({
+        k: r.querySelector('.szk').value.trim(),
+        n: +r.querySelector('.szn').value || 0,
+        s: +r.dataset.s || 0
+      }));
+      const bad = m => { Swal.showValidationMessage(m); return false; };
+      if (!n) return bad('กรุณากรอกชื่อสินค้า');
+      if (!(pr0 > 0)) return bad('กรุณากรอกราคาให้ถูกต้อง');
+      if (!sz.length || sz.some(z => !z.k)) return bad('กรุณาเพิ่มไซซ์อย่างน้อย 1 รายการ');
+      const lo = sz.find(z => z.n < z.s);
+      if (lo) return bad('ไซซ์ ' + lo.k + ': จำนวนทั้งหมดต้องไม่น้อยกว่าที่จองแล้ว (' + lo.s + ')');
+      return { n, c: pc.value.trim(), p: pr0, e: pe.value.trim(), sz, i: await fileURL(pi.files[0]) };
+    }
+  }).then(async r => {
+    if (!r.isConfirmed) return;
+    const v = r.value, sz = {};
+    v.sz.forEach(z => sz[z.k] = { n: z.n, s: z.s });
+    Object.assign(p, { name: v.n, color: v.c || '-', price: v.p, emoji: v.e || '🛍️', sz });
+    if (v.i) p.img = v.i;
+    if (!id) {
+      p.id = Date.now();
+      S.prods.push(p);
+    }
+    if (await persist('prods')) toast('บันทึกสินค้าเรียบร้อย');
+    draw();
+  });
+}
+
+async function delP(id) {
+  const r = await Swal.fire({
+    icon: 'warning',
+    title: 'ลบสินค้านี้?',
+    showCancelButton: true,
+    confirmButtonColor: '#D32F2F',
+    confirmButtonText: 'ลบ',
+    cancelButtonText: 'ยกเลิก'
+  });
+  if (r.isConfirmed) {
+    S.prods = S.prods.filter(p => p.id != id);
+    await persist('prods');
+    draw();
+  }
+}
+
+function editN(id) {
+  const n = id ? S.news.find(x => x.id == id) : { t: '', d: '', img: '' };
+  const q = s => String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  const L = (t, h, i) => `<div style="text-align:left;margin-top:.8rem"><label style="font-weight:700;font-size:.92rem">${t}</label>${h ? '<div style="font-size:.78rem;color:var(--mut)">' + h + '</div>' : ''}<div style="margin-top:.3rem">${i}</div></div>`;
+
+  Swal.fire({
+    width: 'min(560px,94vw)',
+    title: id ? '✏️ แก้ไขข่าว' : '➕ เพิ่มข่าวใหม่',
+    html: `<div style="max-height:62vh;overflow-y:auto;padding:0 .3rem">
+      ${L('1) หัวข้อข่าว', '', '<input id="nt" class="inp" value="' + q(n.t) + '">')}
+      ${L('2) รายละเอียด', '', '<textarea id="nd" class="inp" rows="4">' + q(n.d) + '</textarea>')}
+      ${L('3) รูปภาพประกอบ', 'เลือกไฟล์ใหม่เพื่อเปลี่ยนรูป', '<div id="nvb" style="margin-bottom:.5rem;border-radius:16px;overflow:hidden;background:var(--bg);text-align:center">' + (n.img ? '<img src="' + n.img + '" style="max-height:160px;margin:auto">' : '<div style="padding:1rem;color:var(--mut)">ยังไม่มีรูป</div>') + '</div><input id="ni" type="file" accept="image/*" class="inp" onchange="fileURL(this.files[0]).then(u=>{if(u)document.getElementById(&quot;nvb&quot;).innerHTML=&quot;<img src=&apos;&quot;+u+&quot;&apos; style=&apos;max-height:160px;margin:auto&apos;>&quot;})">' + (n.img ? '<label style="display:flex;gap:.4rem;margin-top:.5rem;font-size:.85rem"><input id="nrm" type="checkbox"> ลบรูปเดิมออก</label>' : ''))}
+    </div>`,
+    showCancelButton: true,
+    confirmButtonColor: '#db0862',
+    confirmButtonText: '💾 บันทึก',
+    cancelButtonText: 'ยกเลิก',
+    preConfirm: async () => {
+      const nt = $('#nt'), nd = $('#nd'), ni = $('#ni');
+      if (!nt.value.trim()) {
+        Swal.showValidationMessage('กรุณากรอกหัวข้อข่าว');
+        return false;
+      }
+      return { t: nt.value.trim(), d: nd.value, i: await fileURL(ni.files[0]), rm: !!($('#nrm') && $('#nrm').checked) };
+    }
+  }).then(async r => {
+    if (!r.isConfirmed) return;
+    const v = r.value;
+    if (id) {
+      n.t = v.t;
+      n.d = v.d;
+      if (v.i) n.img = v.i;
+      else if (v.rm) n.img = '';
+    } else {
+      S.news.unshift({ id: Date.now(), t: v.t, d: v.d, img: v.i || '', at: Date.now() });
+    }
+    if (await persist('news')) toast('บันทึกข่าวเรียบร้อย');
+    draw();
+  });
+}
+
+async function delN(id) {
+  const r = await Swal.fire({
+    icon: 'warning',
+    title: 'ลบข่าวนี้?',
+    showCancelButton: true,
+    confirmButtonColor: '#D32F2F'
+  });
+  if (r.isConfirmed) {
+    S.news = S.news.filter(n => n.id != id);
+    await persist('news');
+    draw();
+  }
+}
+
+let RP = { p: 'all', d: new Date().toISOString().slice(0, 10), t: 'all' };
+const PN = { all: 'ทั้งหมด', day: 'รายวัน', week: 'รายสัปดาห์', month: 'รายเดือน' };
+const KC = { 'บริจาค': '#db0862', 'สินค้า': '#FF8A65', 'โต๊ะ': '#26A69A' };
+const STT = { ok: 'ยืนยันแล้ว', wait: 'รอตรวจสอบ', no: 'ไม่ผ่าน' };
+const rsum = (R, s) => R.filter(r => r.st == s).reduce((a, r) => a + r.amt, 0);
+
+function rng() {
+  const d = new Date(RP.d + 'T00:00:00');
+  let a = 0, b = 9e15;
+  if (RP.p == 'day') {
+    a = +d;
+    b = a + 864e5;
+  } else if (RP.p == 'week') {
+    const w = new Date(d);
+    w.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    a = +w;
+    b = a + 7 * 864e5;
+  } else if (RP.p == 'month') {
+    a = +new Date(d.getFullYear(), d.getMonth(), 1);
+    b = +new Date(d.getFullYear(), d.getMonth() + 1, 1);
+  }
+  return [a, b];
+}
+
+function rptRows() {
+  const [a, b] = rng();
+  return [
+    ...S.don.map(x => ({ id: x.id, k: 'บริจาค', who: x.name, det: x.type, amt: x.amount, st: x.status, at: x.at })),
+    ...S.ord.map(x => ({ id: x.id, k: 'สินค้า', who: x.name, det: x.items.map(i => i.p + ' ' + i.s + '×' + i.q).join(', ') + (x.ship ? ' (+จัดส่ง)' : ''), amt: x.total, st: x.status, at: x.at })),
+    ...S.tbl.map(x => ({ id: x.id, k: 'โต๊ะ', who: x.name, det: 'โต๊ะ ' + x.t + ' · ' + x.pax + ' คน', amt: x.total, st: x.status, at: x.at }))
+  ].filter(r => r.at >= a && r.at < b && (RP.t == 'all' || r.k == RP.t)).sort((x, y) => y.at - x.at);
+}
+
+function rptLabel() {
+  const [a, b] = rng();
+  const f = t => new Date(t).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+  return RP.p == 'all' ? 'ข้อมูลทั้งหมด' : RP.p == 'day' ? f(a) : RP.p == 'week' ? f(a) + ' – ' + f(b - 1) : new Date(a).toLocaleDateString('th-TH', { month: 'long', year: 'numeric' });
+}
+
+function rptUI(m) {
+  const R = rptRows();
+  m.innerHTML = `<div class="card p-5 grid gap-3">
+    <div class="flex flex-wrap gap-2 items-center">
+      ${Object.entries(PN).map(([k, v]) => `<button class="btn ${RP.p == k ? '' : 'alt'} !py-1.5 text-xs" onclick="RP.p='${k}';rptUI($('#am'))">${v}</button>`).join('')}
+      ${RP.p != 'all' ? `<input type="date" class="inp !w-auto text-xs" value="${RP.d}" onchange="RP.d=this.value||RP.d;rptUI($('#am'))">` : ''}
+    </div>
+    <div class="flex flex-wrap gap-2">
+      ${['all', 'บริจาค', 'สินค้า', 'โต๊ะ'].map(k => `<button class="badge !py-1.5 !px-3 cursor-pointer text-xs" style="background:${k == 'all' ? '#4A2C6D' : KC[k]};opacity:${RP.t == k ? 1 : .4}" onclick="RP.t='${k}';rptUI($('#am'))">${k == 'all' ? 'ทุกประเภท' : k}</button>`).join('')}
+    </div>
+  </div>
+  <div class="sh">📑 ตัวอย่างรายงาน · ${PN[RP.p]} · ${rptLabel()}</div>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+    ${[['รายการทั้งหมด', R.length + ' รายการ', 'linear-gradient(135deg,#4A2C6D,#8a5cc4)'], ['ยืนยันแล้ว', fm(rsum(R, 'ok')) + ' บาท', 'linear-gradient(135deg,#26A69A,#AED581)'], ['รอตรวจสอบ', fm(rsum(R, 'wait')) + ' บาท', 'linear-gradient(135deg,#F57C00,#FFCA28)'], ['ไม่ผ่าน', R.filter(r => r.st == 'no').length + ' รายการ', 'linear-gradient(135deg,#D32F2F,#FF8A65)']].map(c => `<div class="rounded-3xl p-4 text-white" style="background:${c[2]};box-shadow:0 8px 20px rgba(0,0,0,.12)"><div class="text-xs opacity-90">${c[0]}</div><b class="text-lg">${c[1]}</b></div>`).join('')}
+  </div>
+  <div class="card overflow-hidden">
+    <div class="tw">
+      <table class="w-full text-sm" style="min-width:720px">
+        <thead>
+          <tr style="background:linear-gradient(90deg,#4A2C6D,#db0862);color:#fff">
+            <th class="p-3 text-left">วันที่</th><th class="text-left">เลขที่</th><th class="text-left">ประเภท</th><th class="text-left">ผู้ทำรายการ</th><th class="text-left">รายละเอียด</th><th class="text-right">จำนวนเงิน</th><th class="text-center">สถานะ</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${R.map((r, i) => `<tr style="background:${i % 2 ? 'var(--bg)' : 'transparent'}"><td class="p-3 whitespace-nowrap">${new Date(r.at).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' })}</td><td class="whitespace-nowrap font-mono">${r.id}</td><td><span class="badge" style="background:${KC[r.k]}">${r.k}</span></td><td>${r.who}</td><td style="color:var(--mut)">${r.det}</td><td class="text-right font-semibold">${fm(r.amt)}</td><td class="text-center">${stBadge(r.st)}</td></tr>`).join('') || '<tr><td colspan="7" class="p-8 text-center" style="color:var(--mut)">ไม่มีข้อมูลในช่วงเวลาที่เลือก</td></tr>'}
+        </tbody>
+        <tfoot>
+          <tr style="background:linear-gradient(90deg,#FF8A6533,#db086233)">
+            <td colspan="5" class="p-3 font-bold text-right">รวมที่ยืนยันแล้ว</td>
+            <td class="text-right font-bold" style="color:var(--pri)">${fm(rsum(R, 'ok'))}</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <button class="btn mt-4" onclick="rptPdf()">📄 Export PDF</button>`;
+}
+
+function rptPdf() {
+  const R = rptRows();
+  pdf('รายงานผ้าป่าเพื่อการศึกษา', `<style>*{-webkit-print-color-adjust:exact;print-color-adjust:exact}th{background:#4A2C6D;color:#fff}tr:nth-child(even) td{background:#f6f0fa}.k{color:#fff;padding:1px 8px;border-radius:10px;font-size:12px}</style><h2>รายงานผ้าป่าเพื่อการศึกษา</h2><h3>โรงเรียนร่มเกล้าพิทยาสรรค์</h3><p style="text-align:center">${PN[RP.p]} · ${rptLabel()}${RP.t != 'all' ? ' · ' + RP.t : ''}</p><p>ยอดเงินที่ยืนยันแล้ว ${fm(rsum(R, 'ok'))} บาท · รอตรวจสอบ ${fm(rsum(R, 'wait'))} บาท · รวม ${R.length} รายการ</p><table><tr><th>วันที่</th><th>เลขที่</th><th>ประเภท</th><th>ผู้ทำรายการ</th><th>รายละเอียด</th><th>จำนวนเงิน</th><th>สถานะ</th></tr>${R.map(r => `<tr><td>${new Date(r.at).toLocaleDateString('th-TH')}</td><td>${r.id}</td><td><span class="k" style="background:${KC[r.k]}">${r.k}</span></td><td>${r.who}</td><td>${r.det}</td><td style="text-align:right">${fm(r.amt)}</td><td>${STT[r.st]}</td></tr>`).join('')}<tr><td colspan="5" style="text-align:right"><b>รวมที่ยืนยันแล้ว</b></td><td style="text-align:right"><b>${fm(rsum(R, 'ok'))}</b></td><td></td></tr></table>`);
+}
+
+function schUI(m) {
+  m.innerHTML = `<div class="grid lg:grid-cols-3 gap-4">
+    <div class="card p-5 grid gap-3 content-start">
+      <h3 class="font-bold">🎯 วัตถุประสงค์การระดมทุน</h3>
+      <textarea id="ob" class="inp" rows="6">${S.cfg.obj}</textarea>
+      <button class="btn" onclick="saveObj()">💾 บันทึกวัตถุประสงค์</button>
+    </div>
+    <div class="lg:col-span-2">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="font-bold">📅 กำหนดการงานผ้าป่า</h3>
+        <button class="btn" onclick="editS()">➕ เพิ่มกำหนดการ</button>
+      </div>
+      ${S.sch.map(x => `<div class="card p-3 mb-2 flex gap-3 items-center">${x.img ? '<img src="' + x.img + '" class="w-20 h-20 rounded-2xl object-cover">' : '<div class="ico !w-20 !h-20 !text-3xl" style="background:#4A2C6D">📅</div>'}<div class="flex-1 min-w-0"><b>${x.t}</b><div class="text-sm" style="color:var(--mut)">${x.d}</div><div class="text-sm truncate">${x.det || ''}</div></div><button class="btn alt !px-3" onclick="editS(${x.id})">✏️</button><button class="btn !px-3" style="background:#D32F2F" onclick="delS(${x.id})">🗑️</button></div>`).join('') || '<div class="card p-5" style="color:var(--mut)">ยังไม่มีกำหนดการ</div>'}
+    </div>
+  </div>`;
+}
+
+const MTH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+function schFill() {
+  const sdd = $('#sdd'), sdt = $('#sdt'), sd = $('#sd');
+  const d = sdd.value, t = sdt.value;
+  if (!d) return;
+  const [y, m, dy] = d.split('-');
+  sd.value = (+dy) + ' ' + MTH[m - 1] + ' ' + (+y + 543) + (t ? ' · ' + t.replace(':', '.') + ' น.' : '');
+  schPv();
+}
+
+function schPv() {
+  const q = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const spv = $('#spv'), sd = $('#sd'), st = $('#st'), sx = $('#sx');
+  if (!spv) return;
+  spv.innerHTML = `<div style="font-size:.78rem;font-weight:700;color:#db0862">${q(sd ? sd.value : '') || '(ยังไม่ระบุวันเวลา)'}</div><div style="font-weight:700">${q(st ? st.value : '') || '(ยังไม่มีชื่อกิจกรรม)'}</div><div style="font-size:.85rem;color:var(--mut)">${q(sx ? sx.value : '')}</div>`;
+}
+
+function editS(id) {
+  const x = id ? S.sch.find(v => v.id == id) : { d: '', t: '', det: '', img: '' };
+  const q = s => String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+  const L = (c, t, h, i) => `<div style="text-align:left;margin-top:.9rem;padding:.8rem;border-radius:18px;border:1px solid var(--bd);background:var(--bg)"><label style="font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:.5rem"><span style="display:inline-grid;place-items:center;width:26px;height:26px;border-radius:9px;color:#fff;font-size:.8rem;background:${c}">${t[0]}</span>${t.slice(1)}</label>${h ? '<div style="font-size:.78rem;color:var(--mut);margin:.2rem 0 0 2rem">' + h + '</div>' : ''}<div style="margin-top:.5rem">${i}</div></div>`;
+
+  Swal.fire({
+    width: 'min(600px,94vw)',
+    title: id ? '✏️ แก้ไขกำหนดการ' : '➕ เพิ่มกำหนดการใหม่',
+    html: `<div style="max-height:64vh;overflow-y:auto;padding:0 .3rem">
+      ${L('#db0862', '1วันที่และเวลา', 'เลือกระบบจะเติมข้อความให้อัตโนมัติ หรือพิมพ์เองได้', '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem"><div><div class="lbl">📅 เลือกวันที่</div><input id="sdd" type="date" class="inp" oninput="schFill()"></div><div><div class="lbl">⏰ เลือกเวลา</div><input id="sdt" type="time" class="inp" oninput="schFill()"></div></div><div class="lbl" style="margin-top:.6rem">ข้อความที่จะแสดงบนหน้าเว็บ</div><input id="sd" class="inp" placeholder="เช่น 20 ธ.ค. 2569 · 09.00 น." value="' + q(x.d) + '" oninput="schPv()">')}
+      ${L('#4A2C6D', '2ชื่อกิจกรรม (จำเป็น)', 'เช่น พิธีทอดผ้าป่า, งานเลี้ยงสังสรรค์', '<input id="st" class="inp" placeholder="ชื่อกิจกรรม" value="' + q(x.t) + '" oninput="schPv()">')}
+      ${L('#26A69A', '3รายละเอียด', 'สถานที่ สิ่งที่จะทำ หรือข้อควรทราบ', '<textarea id="sx" class="inp" rows="3" placeholder="รายละเอียดเพิ่มเติม" oninput="schPv()">' + q(x.det) + '</textarea>')}
+      ${L('#FF8A65', '4รูปภาพประกอบ', 'เลือกไฟล์ใหม่เพื่อเปลี่ยนรูป', '<div id="svb" style="margin-bottom:.5rem;border-radius:16px;overflow:hidden;background:var(--card);text-align:center">' + (x.img ? '<img src="' + x.img + '" style="max-height:150px;margin:auto">' : '<div style="padding:.8rem;color:var(--mut)">ยังไม่มีรูป</div>') + '</div><input id="si" type="file" accept="image/*" class="inp" onchange="fileURL(this.files[0]).then(u=>{if(u)document.getElementById(&quot;svb&quot;).innerHTML=&quot;<img src=&apos;&quot;+u+&quot;&apos; style=&apos;max-height:150px;margin:auto&apos;>&quot;})">' + (x.img ? '<label style="display:flex;gap:.4rem;margin-top:.5rem;font-size:.85rem"><input id="srm" type="checkbox"> ลบรูปเดิมออก</label>' : ''))}
+      ${L('#0288D1', '5ตัวอย่างที่จะแสดง', 'อัปเดตแบบเรียลไทม์', '<div id="spv" style="border-left:3px solid #db0862;padding:.2rem .8rem"></div>')}
+    </div>`,
+    didOpen: () => {
+      if (!id) {
+        const sdd = $('#sdd'), sdt = $('#sdt');
+        if (sdd && sdt) {
+          sdd.value = '2026-12-20';
+          sdt.value = '09:00';
+          schFill();
+        }
+      } else schPv();
+    },
+    showCancelButton: true,
+    confirmButtonColor: '#db0862',
+    confirmButtonText: '💾 บันทึก',
+    cancelButtonText: 'ยกเลิก',
+    preConfirm: async () => {
+      const st = $('#st'), sd = $('#sd'), sx = $('#sx'), si = $('#si');
+      if (!st.value.trim()) {
+        Swal.showValidationMessage('กรุณากรอกชื่อกิจกรรม (ข้อ 2)');
+        return false;
+      }
+      return { d: sd.value.trim(), t: st.value.trim(), det: sx.value, i: await fileURL(si.files[0]), rm: !!($('#srm') && $('#srm').checked) };
+    }
+  }).then(async r => {
+    if (!r.isConfirmed) return;
+    const v = r.value;
+    if (id) {
+      Object.assign(x, { d: v.d, t: v.t, det: v.det });
+      if (v.i) x.img = v.i;
+      else if (v.rm) x.img = '';
+    } else {
+      S.sch.push({ id: Date.now(), d: v.d, t: v.t, det: v.det, img: v.i });
+    }
+    if (await persist('sch')) toast('บันทึกกำหนดการเรียบร้อย');
+    draw();
+  });
+}
+
+async function delS(id) {
+  const r = await Swal.fire({
+    icon: 'warning',
+    title: 'ลบกำหนดการนี้?',
+    showCancelButton: true,
+    confirmButtonColor: '#D32F2F'
+  });
+  if (r.isConfirmed) {
+    S.sch = S.sch.filter(v => v.id != id);
+    await persist('sch');
+    draw();
+  }
+}
+
+function fx() {
+  document.querySelectorAll('#main>section,#main>div>.card,#am>div>.card,#am>div>div>.card').forEach(e => e.classList.add('rv'));
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  }), { threshold: .06 });
+  document.querySelectorAll('.rv').forEach((e, i) => {
+    e.style.transitionDelay = (i % 5) * 80 + 'ms';
+    io.observe(e);
+  });
+  document.querySelectorAll('[data-n]').forEach(e => {
+    const t = +e.dataset.n, t0 = performance.now();
+    const f = n => {
+      const p = Math.min(1, (n - t0) / 1200);
+      e.textContent = fm(Math.round(t * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) requestAnimationFrame(f);
+    };
+    requestAnimationFrame(f);
+  });
+  document.querySelectorAll('[data-w]').forEach(e => {
+    e.style.width = '0';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      e.style.width = e.dataset.w + '%';
+    }));
+  });
+}
+
+const _d = draw;
+draw = function() {
+  _d();
+  fx();
+};
+
+// เริ่มต้นโหลดข้อมูลทันที
+(async () => {
+  $('#app').innerHTML = '<div class="min-h-screen grid place-items-center"><div class="spin" style="border-color:#db086233;border-top-color:#db0862"></div></div>';
+  const r = await rpc('getPublic');
+  if (r.ok) {
+    S = r.data;
+    LT = Date.now();
+    draw();
+  } else {
+    $('#app').innerHTML = `<div class="min-h-screen grid place-items-center p-4">
+      <div class="card p-6 max-w-sm text-center grid gap-3">
+        <div class="text-4xl">⚠️</div>
+        <b>เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ</b>
+        <div class="text-sm" style="color:var(--mut)">${r.msg || ''}</div>
+        <button class="btn" onclick="location.reload()">🔄 ลองใหม่</button>
+      </div>
+    </div>`;
+  }
+})();
 </script>
 </body>
 </html>
