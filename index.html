@@ -76,7 +76,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
  * ใส่ URL ของ Web App ที่ Deploy แล้ว เช่น 'https://script.google.com/macros/s/XXXX/exec'
  * ปล่อยว่างไว้เมื่อเปิดผ่าน Web App ของ Apps Script โดยตรง
  */
-const API_URL = 'https://script.google.com/macros/s/AKfycbyPEn6pw5DZaAsHo8RgydfP7CMgXKjh-x2wCQBlBzjpys8pK3ABMj3OMLXzhgDIr_QMIw/exec';
+const API_URL = '';
 const IN_GAS = !!(window.google && google.script && google.script.run);
 const MOCK = !IN_GAS && !API_URL;   // โหมดทดสอบด้วยข้อมูลจำลองในเบราว์เซอร์
 
@@ -92,6 +92,12 @@ const EMPTY = () => ({
     target: 500000,
     pp: '0812345678',
     ppImg: '',
+    ppDon: '0812345678',
+    ppDonImg: '',
+    ppShop: '0812345678',
+    ppShopImg: '',
+    ppTbl: '0812345678',
+    ppTblImg: '',
     tgToken: '',
     tgChat: '',
     seat: 8,
@@ -747,7 +753,17 @@ function home(m) {
 
 const field = (id, l, t = 'text', x = '') => `<div><label class="lbl">${l}</label><input id="${id}" type="${t}" class="inp" ${x}></div>`;
 const slipBox = `<div><label class="lbl">📎 อัปโหลดสลิปการโอนเงิน (รูปภาพ)</label><input id="slip" type="file" accept="image/*" class="inp"></div>`;
-const ppBox = () => `<div class="rounded-2xl p-4 text-center" style="background:var(--bg)"><div class="lbl">สแกน QR PromptPay</div>${S.cfg.ppImg ? '<img src="' + S.cfg.ppImg + '" class="mx-auto w-44 rounded-xl shadow">' : '<div class="w-44 h-44 mx-auto rounded-xl grid place-items-center bg-white text-5xl border shadow-inner">▦</div><div class="text-xs mt-1" style="color:var(--mut)">Admin สามารถตั้งค่า QR ได้ที่เมนูตั้งค่า</div>'}${S.cfg.pp ? '<div class="mt-2 font-semibold text-sm">PromptPay: ' + S.cfg.pp + '</div>' : ''}</div>`;
+const PAY = {
+  don:  { k: 'ppDon',  n: '💰 บริจาค' },
+  shop: { k: 'ppShop', n: '👕 ของที่ระลึก' },
+  tbl:  { k: 'ppTbl',  n: '🪑 จองโต๊ะ' }
+};
+const ppBox = (kind) => {
+  const k = (PAY[kind] || PAY.don).k;
+  const img = S.cfg[k + 'Img'] || S.cfg.ppImg || '';
+  const num = S.cfg[k] || S.cfg.pp || '';
+  return `<div class="rounded-2xl p-4 text-center" style="background:var(--bg)"><div class="lbl">สแกน QR PromptPay</div>${img ? '<img src="' + img + '" class="mx-auto w-44 rounded-xl shadow">' : '<div class="w-44 h-44 mx-auto rounded-xl grid place-items-center bg-white text-5xl border shadow-inner">▦</div><div class="text-xs mt-1" style="color:var(--mut)">Admin สามารถตั้งค่า QR ได้ที่เมนูตั้งค่า</div>'}${num ? '<div class="mt-2 font-semibold text-sm">PromptPay: ' + num + '</div>' : ''}</div>`;
+};
 
 function skel(m, f) {
   m.innerHTML = '<div class="grid gap-3"><div class="sk h-24"></div><div class="sk h-64"></div></div>';
@@ -779,7 +795,7 @@ function donate(m) {
         <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="ds" checked> แสดงชื่อผู้บริจาคบน Wall of Donors</label>
       </div>
       <div class="md:col-span-2 grid gap-3 content-start card p-5">
-        ${ppBox()}
+        ${ppBox('don')}
         ${slipBox}
         <button class="btn w-full mt-2" onclick="subDon()">✅ ส่งข้อมูลการบริจาค</button>
       </div>
@@ -862,7 +878,7 @@ function shop(m) {
           <label class="lbl">📍 ที่อยู่จัดส่ง (ค่าจัดส่ง +40 บาท)</label>
           <textarea id="oa" class="inp" rows="3" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด รหัสไปรษณีย์"></textarea>
         </div>
-        ${ppBox()}
+        ${ppBox('shop')}
         ${slipBox}
         <button class="btn w-full mt-2" onclick="subOrd()">✅ ยืนยันการจอง</button>
       </div>
@@ -1006,7 +1022,7 @@ function tableRender(m) {
           ${field('tp', 'เบอร์โทรศัพท์', 'tel')}
           ${field('tx', 'จำนวนผู้เข้าร่วม (คน)', 'number', 'max="' + S.cfg.seat + '" value="' + S.cfg.seat + '"')}
           ${field('tm', 'ข้อความเพิ่มเติม / หมายเหตุ')}
-          ${ppBox()}
+          ${ppBox('tbl')}
           ${slipBox}
           <button class="btn w-full mt-2" onclick="subT()">✅ ยืนยันการจองโต๊ะ</button>
         ` : '<div class="py-10 text-center" style="color:var(--mut)"><div class="text-3xl mb-2">👈</div>กรุณากดเลือกโต๊ะสีเขียวที่ว่างเพื่อจอง</div>'}
@@ -1455,14 +1471,26 @@ function adminInit() {
         <div><label class="lbl">ภาพส่วนหัวแบนเนอร์ (อัปโหลดไฟล์)</label><input id="cb" type="file" accept="image/*" class="inp"></div>
       </div>
       <div class="card p-5 grid gap-3 content-start">
-        <h3 class="font-bold text-base">💳 การชำระเงิน PromptPay</h3>
-        ${field('cp', 'เบอร์ / เลขประจำตัว PromptPay', 'text', 'value="' + S.cfg.pp + '"')}
-        <div><label class="lbl">รูปภาพ QR PromptPay (อัปโหลด)</label><input id="cq" type="file" accept="image/*" class="inp"></div>
-        <h3 class="font-bold mt-2 text-base">✈️ แจ้งเตือน Telegram Bot</h3>
+        <h3 class="font-bold text-base">✈️ แจ้งเตือน Telegram Bot</h3>
         ${field('tk', 'Bot Token (จาก @BotFather)', 'text', 'value="' + (S.cfg.tgToken || '') + '"')}
         ${field('tc', 'Chat ID ผู้รับแจ้งเตือน (จาก @userinfobot)', 'text', 'value="' + (S.cfg.tgChat || '') + '"')}
         <h3 class="font-bold mt-2 text-base">🔐 เปลี่ยนรหัสผ่าน Admin</h3>
         ${field('cw', 'รหัสผ่านใหม่ (เว้นว่างหากไม่ต้องการเปลี่ยน)', 'password')}
+      </div>
+    </div>
+    <div class="card p-5 mt-4">
+      <h3 class="font-bold text-base mb-1">💳 บัญชีรับโอน PromptPay แยกตามช่องทาง</h3>
+      <div class="text-xs mb-3" style="color:var(--mut)">ตั้งค่าเบอร์และ QR แยกกันได้ ถ้าไม่ต้องการแยก ให้ใส่ข้อมูลเดียวกันทั้ง 3 ช่องทาง (เว้นรูป QR ไว้หากไม่ต้องการเปลี่ยน)</div>
+      <div class="grid md:grid-cols-3 gap-4">
+        ${Object.keys(PAY).map(kd => {
+          const k = PAY[kd].k, img = S.cfg[k + 'Img'] || S.cfg.ppImg || '';
+          return `<div class="rounded-2xl p-4 grid gap-3 content-start" style="background:var(--bg)">
+            <div class="font-bold">${PAY[kd].n}</div>
+            ${field('pp_' + kd, 'เบอร์ / เลขประจำตัว PromptPay', 'text', 'value="' + (S.cfg[k] || S.cfg.pp || '') + '"')}
+            ${img ? '<img src="' + img + '" class="w-28 rounded-xl shadow mx-auto">' : '<div class="text-xs text-center" style="color:var(--mut)">ยังไม่มีรูป QR</div>'}
+            <div><label class="lbl">รูปภาพ QR (อัปโหลดเพื่อเปลี่ยน)</label><input id="pq_${kd}" type="file" accept="image/*" class="inp"></div>
+          </div>`;
+        }).join('')}
       </div>
     </div>
     <div class="flex gap-2 flex-wrap mt-4">
@@ -1473,17 +1501,19 @@ function adminInit() {
 }
 
 async function saveSet() {
-  const cn = $('#cn'), cs = $('#cs'), ct = $('#ct'), cp = $('#cp'), tk = $('#tk'), tc = $('#tc'), cw = $('#cw');
+  const cn = $('#cn'), cs = $('#cs'), ct = $('#ct'), tk = $('#tk'), tc = $('#tc'), cw = $('#cw');
   const r = await busy(async () => {
     const c = {
       name: cn.value,
       sub: cs.value,
       target: +ct.value || S.cfg.target,
-      pp: cp.value,
+      ppDon: $('#pp_don').value,
+      ppShop: $('#pp_shop').value,
+      ppTbl: $('#pp_tbl').value,
       tgToken: tk.value,
       tgChat: tc.value
     };
-    for (const [i, k] of [['cl', 'logo'], ['cb', 'banner'], ['cq', 'ppImg']]) {
+    for (const [i, k] of [['cl', 'logo'], ['cb', 'banner'], ['pq_don', 'ppDonImg'], ['pq_shop', 'ppShopImg'], ['pq_tbl', 'ppTblImg']]) {
       const f = $('#' + i);
       if (f && f.files && f.files[0]) {
         c[k] = await fileURL(f.files[0]);
