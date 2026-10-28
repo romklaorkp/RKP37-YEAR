@@ -35,8 +35,14 @@ const DEFAULT_CFG = {
   logo: '',
   banner: '',
   target: 500000,
-  pp: '0812345678',
+  pp: '0812345678',          // ค่าเดิม (ใช้เป็นค่าสำรองของทุกช่องทางเมื่อยังไม่ได้ตั้งแยก)
   ppImg: '',
+  ppDon: '',                 // PromptPay: บริจาค
+  ppDonImg: '',
+  ppShop: '',                // PromptPay: ของที่ระลึก
+  ppShopImg: '',
+  ppTbl: '',                 // PromptPay: จองโต๊ะ
+  ppTblImg: '',
   tgToken: '',
   tgChat: '',
   seat: 8,
@@ -46,7 +52,8 @@ const DEFAULT_CFG = {
   cols: 4
 };
 const NUM_KEYS = ['target', 'seat', 'price', 'rows', 'cols'];
-const IMG_KEYS = ['logo', 'banner', 'ppImg'];
+const IMG_KEYS = ['logo', 'banner', 'ppImg', 'ppDonImg', 'ppShopImg', 'ppTblImg'];
+const PAY_KEYS = ['ppDon', 'ppShop', 'ppTbl'];
 const DONOR_TYPES = ['ศิษย์เก่า', 'ผู้ปกครอง', 'ครู/บุคลากร', 'นักเรียน', 'บุคคลทั่วไป', 'หน่วยงาน/องค์กร'];
 const METHODS = ['รับที่โรงเรียน', 'รับวันงาน', 'จัดส่ง'];
 
@@ -334,6 +341,11 @@ function getCfg_() {
     } else {
       cfg[r.key] = r.value;
     }
+  });
+  // ช่องทางที่ยังไม่ได้ตั้งค่าแยก ให้ใช้ค่า PromptPay เดิมเป็นค่าสำรอง
+  PAY_KEYS.forEach(function (k) {
+    if (!cfg[k]) cfg[k] = cfg.pp;
+    if (!cfg[k + 'Img']) cfg[k + 'Img'] = cfg.ppImg;
   });
   return cfg;
 }
@@ -941,6 +953,9 @@ function adminSaveConfig(tk, c, newPass) {
       if (has_(c, 'sub')) out.sub = h_(c.sub, 200);
       if (has_(c, 'obj')) out.obj = h_(c.obj, 2000);
       if (has_(c, 'pp')) out.pp = h_(c.pp, 40).replace(/\s+/g, '');
+      PAY_KEYS.forEach(function (k) {
+        if (has_(c, k)) out[k] = h_(c[k], 40).replace(/\s+/g, '');
+      });
       if (has_(c, 'target')) {
         const t = num_(c.target, 0);
         if (!(t > 0) || t > 1e10) fail_('เป้าหมายเงินบริจาคไม่ถูกต้อง');
@@ -967,6 +982,8 @@ function adminSaveConfig(tk, c, newPass) {
       });
       Object.assign(out, validTableCfg_(c, cur));
       if (Object.keys(out).length) setCfg_(out);
+      const after = getCfg_();
+      IMG_KEYS.forEach(function (k) { newImgs.push(after[k]); });   // รูปที่ยังถูกใช้ในช่องทางอื่น ห้ามลบ
       trashOrphans_(oldImgs, newImgs);
 
       if (newPass !== undefined && newPass !== null && String(newPass).length) {
