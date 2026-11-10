@@ -77,6 +77,8 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
  * ปล่อยว่างไว้เมื่อเปิดผ่าน Web App ของ Apps Script โดยตรง
  */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyPEn6pw5DZaAsHo8RgydfP7CMgXKjh-x2wCQBlBzjpys8pK3ABMj3OMLXzhgDIr_QMIw/exec';
+const IN_GAS = !!(window.google && google.script && google.script.run);
+const MOCK = !IN_GAS && !API_URL;   // โหมดทดสอบด้วยข้อมูลจำลองในเบราว์เซอร์
 
 const $ = s => document.querySelector(s);
 const fm = n => Number(n || 0).toLocaleString('th-TH');
@@ -194,9 +196,9 @@ function mockRpc(fn, a) {
     db = {
       cfg: EMPTY().cfg,
       prods: [
-        { id: 1, name: 'เสื้อโปโลที่ระลึกผ้าป่า 69', color: 'ม่วง', price: 350, emoji: '👕', img: '', sz: { S: {n:50, s:4}, M: {n:80, s:12}, L: {n:100, s:15}, XL: {n:70, s:8}, '2XL': {n:30, s:2} } },
-        { id: 2, name: 'เสื้อยืดคอกลมผ้าป่าศิษย์เก่า', color: 'แสด', price: 250, emoji: '🎽', img: '', sz: { S: {n:40, s:2}, M: {n:60, s:5}, L: {n:80, s:6}, XL: {n:50, s:3}, '2XL': {n:20, s:1} } },
-        { id: 3, name: 'แก้วน้ำเก็บความเย็นร่มเกล้าฯ', color: '-', price: 299, emoji: '🥤', img: '', sz: { 'ฟรีไซซ์': {n:100, s:10} } }
+        { id: 1, cat: 'เสื้อโปโล', name: 'เสื้อโปโลที่ระลึกผ้าป่า 69', color: 'ม่วง', price: 350, emoji: '👕', img: '', sz: { S: {n:50, s:4}, M: {n:80, s:12}, L: {n:100, s:15}, XL: {n:70, s:8}, '2XL': {n:30, s:2} } },
+        { id: 2, cat: 'เสื้อยืด', name: 'เสื้อยืดคอกลมผ้าป่าศิษย์เก่า', color: 'แสด', price: 250, emoji: '🎽', img: '', sz: { S: {n:40, s:2}, M: {n:60, s:5}, L: {n:80, s:6}, XL: {n:50, s:3}, '2XL': {n:20, s:1} } },
+        { id: 3, cat: 'แก้วน้ำ', name: 'แก้วน้ำเก็บความเย็นร่มเกล้าฯ', color: '-', price: 299, emoji: '🥤', img: '', sz: { 'ฟรีไซซ์': {n:100, s:10} } }
       ],
       news: [
         { id: 1718000000000, at: Date.now() - 86400000 * 2, t: 'ขอเชิญร่วมทำบุญทอดผ้าป่าสามัคคีเพื่อการศึกษา ประจำปี 2569', d: 'โรงเรียนร่มเกล้าพิทยาสรรค์ ขอเชิญชวนศิษย์เก่า ผู้ปกครอง และผู้มีจิตศรัทธา ร่วมทำบุญทอดผ้าป่าเพื่อการศึกษาและพัฒนาคุณภาพการเรียนรู้', img: '' }
@@ -237,7 +239,7 @@ function mockRpc(fn, a) {
         tables: Array.from({ length: (db.cfg.rows || 3) * (db.cfg.cols || 4) }, (_, i) => 'T' + String(i + 1).padStart(2, '0')),
         agg: { sum: sum, n: dn.length, items: totalItems },
         don: db.don.map(d => ({ id: d.id, at: d.at, name: d.name, type: d.type, amount: d.amount, show: d.show, status: d.status })),
-        tbl: db.tbl.map(t => ({ t: t.t, status: t.status }))
+        tbl: db.tbl.map(t => ({ t: t.t, status: t.status, label: t.status == 'ok' ? (t.label || t.name) : '' }))
       }
     };
   }
@@ -291,7 +293,7 @@ function mockRpc(fn, a) {
       if (prod && prod.sz[it.s]) {
         prod.sz[it.s].s += it.q;
         sub += prod.price * it.q;
-        enriched.push({ id: it.id, p: prod.name, s: it.s, q: it.q, price: prod.price });
+        enriched.push({ id: it.id, p: prod.name, c: prod.color, k: prod.cat || 'อื่นๆ', s: it.s, q: it.q, price: prod.price });
       }
     }
     const ship = p.method === 'จัดส่ง' ? 40 : 0;
@@ -369,6 +371,14 @@ function mockRpc(fn, a) {
       return { ok: true };
     }
     return { ok: false, msg: 'ไม่พบรายการ' };
+  }
+
+  if (fn === 'adminSetLabel') {
+    const b = db.tbl.find(x => x.id === a[1]);
+    if (!b) return { ok: false, msg: 'ไม่พบรายการจองโต๊ะ' };
+    b.label = String(a[2] || '').trim().slice(0, 60);
+    setStorage('db', db);
+    return { ok: true };
   }
 
   if (fn === 'adminGetSlip') {
@@ -621,6 +631,37 @@ const mk = (id, type, labels, data, colors) => {
 };
 
 const PAL = ['#db0862', '#4A2C6D', '#FF8A65', '#26A69A', '#FFCA28', '#0288D1', '#AED581'];
+
+/* ---------- ประเภทสินค้า ---------- */
+const CAT_DEF = ['เสื้อโปโล', 'เสื้อยืด', 'แก้วน้ำ', 'อื่นๆ'];
+const CAT_PAL = ['#db0862', '#4A2C6D', '#26A69A', '#FF8A65', '#0288D1', '#F9A825', '#7CB342', '#8D6E63'];
+const pcat = p => (p && p.cat) || 'อื่นๆ';
+const catOf = i => i.k || pcat(S.prods.find(p => p.id == i.id));
+const catList = () => [...new Set(S.prods.map(pcat))];
+const catColor = c => CAT_PAL[Math.max(0, catList().indexOf(c)) % CAT_PAL.length];
+const catBadge = c => '<span class="badge" style="background:' + catColor(c) + '">' + c + '</span>';
+const szSort = (a, b) => {
+  const ia = SZ.indexOf(a), ib = SZ.indexOf(b);
+  return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || String(a).localeCompare(String(b), 'th');
+};
+
+const mkStack = (id, labels, sets) => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  charts.push(new Chart(el, {
+    type: 'bar',
+    data: { labels, datasets: sets.map(d => ({ ...d, borderWidth: 0, borderRadius: 4 })) },
+    plugins: [badgeP],
+    options: {
+      maintainAspectRatio: false,
+      plugins: { legend: { display: true, position: 'bottom' } },
+      scales: {
+        x: { stacked: true, grid: { display: false } },
+        y: { stacked: true, beginAtZero: true, grid: { color: '#8883' } }
+      }
+    }
+  }));
+};
 
 const go = async v => {
   menu = false;
@@ -986,6 +1027,23 @@ async function subOrd() {
 }
 
 let selT = null;
+const TC = { free: '#26A69A', wait: '#FBC02D', ok: '#EF5350' };
+const TS = { free: 'ว่าง', wait: 'รอตรวจสอบ', ok: 'จองแล้ว' };
+const tLabel = t => { const b = S.tbl.find(x => x.t == t && x.status == 'ok'); return b ? (b.label || '') : ''; };
+
+/* โต๊ะกลมพร้อมเก้าอี้ ใช้ทั้งหน้าจองและตัวอย่างผังของ Admin */
+const tblCell = (id, s, label, q, click, sel) => {
+  const col = TC[s];
+  const chairs = Array.from({ length: q }, (_, i) => `<i style="position:absolute;left:50%;top:50%;width:11px;height:11px;margin:-5.5px;border-radius:6px 6px 3px 3px;background:${col};box-shadow:0 2px 0 rgba(0,0,0,.25);transform:rotate(${i * 360 / q}deg) translateY(-34px)"></i>`).join('');
+  return `<div class="relative" style="width:84px;height:84px;margin-bottom:${label ? 30 : 6}px;${click ? 'cursor:pointer' : ''}" ${click ? 'onclick="' + click + '"' : ''} title="${id}${label ? ' · ' + String(label).replace(/"/g, '&quot;') : ''}">
+    ${chairs}
+    <div class="absolute grid place-items-center text-white text-xs font-bold" style="inset:20px;border-radius:50%;background:${col};box-shadow:0 4px 0 rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.5);${sel ? 'outline:4px solid #4A2C6D;outline-offset:3px' : ''}">${id}</div>
+    <div class="absolute text-center" style="top:88px;left:-10px;right:-10px;line-height:1.15">
+      ${label ? `<div class="font-semibold" style="font-size:11px;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${label}</div>` : ''}
+    </div>
+  </div>`;
+};
+
 const tState = t => {
   const b = S.tbl.find(x => x.t == t && x.status != 'no');
   return b ? (b.status == 'ok' ? 'ok' : 'wait') : 'free';
@@ -1003,12 +1061,16 @@ function tableRender(m) {
         <div class="text-center py-2 rounded-xl text-white font-bold mb-4" style="background:#4A2C6D">🎤 เวทีหลัก</div>
         <div class="grid gap-3" style="grid-template-columns:repeat(${S.cfg.cols || 4},minmax(0,1fr))">
           ${S.tables.map(t => {
-            const s = tState(t), c = { free: '#26A69A', wait: '#FBC02D', ok: '#EF5350' }[s];
-            return `<button ${s != 'free' ? 'disabled' : ''} onclick="pickT('${t}')" class="tb rounded-2xl py-4 font-bold text-white shadow ${selT == t ? 'ring-4 ring-[#4A2C6D]' : ''}" style="background:${c};opacity:${s == 'free' ? 1 : .75}">
+            const s = tState(t), c = TC[s], lb = s == 'ok' ? tLabel(t) : '';
+            return `<button ${s != 'free' ? 'disabled' : ''} onclick="pickT('${t}')" title="${t}${lb ? ' · ' + String(lb).replace(/"/g, '&quot;') : ''}" class="tb rounded-2xl py-3 px-1 font-bold text-white shadow flex flex-col items-center justify-center ${selT == t ? 'ring-4 ring-[#4A2C6D]' : ''}" style="background:${c};opacity:${s == 'free' ? 1 : .85};min-height:92px">
               ${t}
-              <div class="text-[10px] font-normal">${{ free: 'ว่าง', wait: 'รอตรวจสอบ', ok: 'จองแล้ว' }[s]}</div>
+              <div class="text-[10px] font-normal">${TS[s]}</div>
+              ${lb ? `<div class="text-[11px] font-semibold leading-tight mt-1 w-full" style="word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${lb}</div>` : ''}
             </button>`;
           }).join('')}
+        </div>
+        <div class="flex flex-wrap gap-2 justify-center mt-3">
+          ${Object.keys(TC).map(k => `<span class="badge" style="background:${TC[k]};${k == 'wait' ? 'color:#2a1a3a' : ''}">${TS[k]}</span>`).join('')}
         </div>
         <div class="text-center py-2 mt-4 rounded-xl border text-sm" style="border-color:var(--bd);color:var(--mut)">🚪 ทางเข้างาน</div>
       </div>
@@ -1081,13 +1143,9 @@ function seatPv() {
     <div class="grid gap-3" style="grid-template-columns:repeat(${c},84px);min-width:${c * 96}px;justify-content:center">
       ${Array.from({ length: r * c }, (_, k) => {
         const id = 'T' + String(k + 1).padStart(2, '0');
-        const b = S.tbl.find(x => x.t == id && x.status != 'no');
-        const s = b ? (b.status == 'ok' ? 'ok' : 'wait') : 'free';
-        const col = { free: '#26A69A', wait: '#FBC02D', ok: '#EF5350' }[s];
-        return `<div class="relative" style="width:84px;height:84px">
-          ${Array.from({ length: q }, (_, i) => `<i style="position:absolute;left:50%;top:50%;width:11px;height:11px;margin:-5.5px;border-radius:6px 6px 3px 3px;background:${col};box-shadow:0 2px 0 rgba(0,0,0,.25);transform:rotate(${i * 360 / q}deg) translateY(-34px)"></i>`).join('')}
-          <div class="absolute grid place-items-center text-white text-xs font-bold" style="inset:20px;border-radius:50%;background:${col};box-shadow:0 4px 0 rgba(0,0,0,.25),inset 0 2px 3px rgba(255,255,255,.5)">${id}</div>
-        </div>`;
+        const bk = S.tbl.find(x => x.t == id && x.status != 'no');
+        const st = bk ? (bk.status == 'ok' ? 'ok' : 'wait') : 'free';
+        return tblCell(id, st, st == 'ok' ? (bk.label || bk.name) : '', q, '', false);
       }).join('')}
     </div>
   `;
@@ -1388,17 +1446,21 @@ function adminInit() {
       ${[['💰', 'เงินบริจาค', fm(s.sum) + ' บาท', '#db0862'], ['🪑', 'โต๊ะ', s.tb + ' / ' + s.tbl, '#26A69A'], ['👕', 'ผู้สั่งสินค้า', S.ord.length + ' ราย', '#FF8A65'], ['👥', 'ผู้ร่วมงาน', S.tbl.filter(t => t.status != 'no').reduce((a, t) => a + t.pax, 0) + ' คน', '#4A2C6D']].map(c => `<div class="card p-4 flex gap-3 items-center"><span class="ico" style="background:${c[3]}">${c[0]}</span><div><div class="lbl !mb-0">${c[1]}</div><b class="text-lg">${c[2]}</b></div></div>`).join('')}
     </div>
     <div class="grid lg:grid-cols-2 gap-4 mt-4">
-      ${[['ยอดบริจาครายวัน', 'a1'], ['ผู้บริจาคแยกตามประเภท', 'a2'], ['สินค้าขายดี', 'a3'], ['ขนาดเสื้อที่ถูกจอง', 'a4']].map(c => `<div class="card p-4"><b>${c[0]}</b><div style="height:240px"><canvas id="${c[1]}"></canvas></div></div>`).join('')}
+      ${[['ยอดบริจาครายวัน', 'a1', ''], ['ผู้บริจาคแยกตามประเภท', 'a2', ''], ['สินค้าขายดี (สีตามประเภทสินค้า)', 'a3', catList().map(catBadge).join(' ')], ['ขนาดที่ถูกจอง แยกตามประเภทสินค้า', 'a4', '']].map(c => `<div class="card p-4"><b>${c[0]}</b>${c[2] ? '<div class="flex flex-wrap gap-1 mt-1">' + c[2] + '</div>' : ''}<div style="height:260px"><canvas id="${c[1]}"></canvas></div></div>`).join('')}
     </div>
     <button class="btn mt-4" onclick="AT='rpt';draw()">📄 Export รายงานสรุป</button>`;
 
     mk('a1', 'bar', Object.keys(dd), Object.values(dd), '#db0862');
     mk('a2', 'doughnut', Object.keys(ty), Object.values(ty), PAL);
-    const pr = S.prods.map(p => [p.name + ' ' + (p.color == '-' ? '' : p.color), Object.values(p.sz).reduce((a, z) => a + z.s, 0)]);
-    mk('a3', 'bar', pr.map(x => x[0]), pr.map(x => x[1]), '#4A2C6D');
-    const zs = {};
-    S.prods.forEach(p => Object.entries(p.sz).forEach(([k, z]) => zs[k] = (zs[k] || 0) + z.s));
-    mk('a4', 'bar', Object.keys(zs), Object.values(zs), '#FF8A65');
+    const pr = S.prods.map(p => [p.name + ' ' + (p.color == '-' ? '' : p.color), Object.values(p.sz).reduce((a, z) => a + z.s, 0), pcat(p)]);
+    mk('a3', 'bar', pr.map(x => x[0]), pr.map(x => x[1]), pr.map(x => catColor(x[2])));
+    const zl = [...new Set(S.prods.flatMap(p => Object.keys(p.sz)))].sort(szSort);
+    const sets = catList().map(c => ({
+      label: c,
+      backgroundColor: catColor(c),
+      data: zl.map(k => S.prods.filter(p => pcat(p) == c).reduce((a, p) => a + (p.sz[k] ? p.sz[k].s : 0), 0))
+    })).filter(d => d.data.some(v => v > 0));
+    mkStack('a4', zl, sets);
   }
 
   if (AT == 'pend') {
@@ -1436,10 +1498,10 @@ function adminInit() {
       <div class="tw">
         <table class="w-full text-sm">
           <thead>
-            <tr class="text-left" style="color:var(--mut)"><th class="p-2">สินค้า</th><th>ราคา</th><th>ไซซ์ (จองแล้ว/ทั้งหมด)</th><th>จัดการ</th></tr>
+            <tr class="text-left" style="color:var(--mut)"><th class="p-2">สินค้า</th><th>ประเภท</th><th>ราคา</th><th>ไซซ์ (จองแล้ว/ทั้งหมด)</th><th>จัดการ</th></tr>
           </thead>
           <tbody>
-            ${S.prods.map(p => `<tr class="border-t" style="border-color:var(--bd)"><td class="p-2">${p.emoji} ${p.name} ${p.color != '-' ? p.color : ''}</td><td>${fm(p.price)}</td><td>${Object.entries(p.sz).map(([k, z]) => `<span class="badge m-0.5" style="background:${z.n - z.s <= 0 ? '#EF5350' : '#26A69A'}">${k} ${z.s}/${z.n}</span>`).join('')}</td><td class="whitespace-nowrap"><button class="btn alt !py-1 !px-3" onclick="editP(${p.id})">✏️</button> <button class="btn !py-1 !px-3" style="background:#D32F2F" onclick="delP(${p.id})">🗑️</button></td></tr>`).join('')}
+            ${[...S.prods].sort((a, b) => pcat(a).localeCompare(pcat(b), 'th')).map(p => `<tr class="border-t" style="border-color:var(--bd)"><td class="p-2">${p.emoji} ${p.name} ${p.color != '-' ? p.color : ''}</td><td>${catBadge(pcat(p))}</td><td>${fm(p.price)}</td><td>${Object.entries(p.sz).map(([k, z]) => `<span class="badge m-0.5" style="background:${z.n - z.s <= 0 ? '#EF5350' : '#26A69A'}">${k} ${z.s}/${z.n}</span>`).join('')}</td><td class="whitespace-nowrap"><button class="btn alt !py-1 !px-3" onclick="editP(${p.id})">✏️</button> <button class="btn !py-1 !px-3" style="background:#D32F2F" onclick="delP(${p.id})">🗑️</button></td></tr>`).join('')}
           </tbody>
         </table>
       </div>
@@ -1586,6 +1648,7 @@ async function review(id) {
       ${x.method ? 'วิธีรับสินค้า: <b>' + x.method + '</b><br>' : ''}
       ${Array.isArray(x.items) ? x.items.map(i => '• ' + i.p + (i.c && i.c != '-' ? ' สี' + i.c : '') + ' ไซซ์ ' + i.s + ' × ' + i.q).join('<br>') + '<br>' : ''}
       ${x.addr ? 'ที่อยู่จัดส่ง: ' + x.addr + ' (รวมค่าส่ง ' + x.ship + ' บาท)<br>' : ''}
+      ${x.t ? '<div class="mt-2 p-2 rounded-xl" style="background:var(--bg)"><label class="lbl">🏷️ ป้ายกำกับบนผังโต๊ะ (เว้นว่าง = แสดงชื่อผู้จอง)</label><input id="rl" class="inp" maxlength="60" placeholder="' + String(x.name).replace(/"/g, '&quot;') + '" value="' + String(x.label || '').replace(/"/g, '&quot;') + '"><div class="text-xs mt-1" style="color:var(--mut)">แสดงบนผังให้ผู้เข้าชมเห็นเมื่ออนุมัติแล้ว เช่น ศิษย์เก่ารุ่น 25</div></div>' : ''}
       ${x.reason ? '<span style="color:#D32F2F">เหตุผลที่ไม่อนุมัติ: ' + x.reason + '</span><br>' : ''}
       ${sl ? '<div class="mt-2 text-center"><img src="' + sl + '" style="max-height:260px;margin:8px auto;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)"></div>' : '<i class="text-xs" style="color:var(--mut)">ไม่มีรูปสลิปแนบ</i>'}
     </div>`,
@@ -1595,10 +1658,18 @@ async function review(id) {
     denyButtonText: '❌ ไม่อนุมัติ',
     cancelButtonText: 'ปิด',
     confirmButtonColor: '#26A69A',
-    denyButtonColor: '#D32F2F'
+    denyButtonColor: '#D32F2F',
+    preConfirm: () => ({ label: x.t ? ($('#rl') ? $('#rl').value.trim() : '') : null })
   });
 
-  if (r.isConfirmed) await doReview(id, 'ok', '');
+  if (r.isConfirmed) {
+    const lb = r.value && r.value.label;
+    if (x.t && lb !== null && lb !== (x.label || '')) {
+      const q = await busy(() => rpc('adminSetLabel', TK, id, lb));
+      if (!q.ok) return errT(q, 'บันทึกป้ายกำกับไม่สำเร็จ');
+    }
+    await doReview(id, 'ok', '');
+  }
   else if (r.isDenied) {
     const q = await Swal.fire({
       title: 'เหตุผลที่ไม่อนุมัติ',
@@ -1631,7 +1702,7 @@ const addPre = () => {
 };
 
 function editP(id) {
-  const p = id ? S.prods.find(x => x.id == id) : { name: '', color: '-', price: 0, emoji: '🛍️', img: '', sz: {} };
+  const p = id ? S.prods.find(x => x.id == id) : { name: '', cat: '', color: '-', price: 0, emoji: '🛍️', img: '', sz: {} };
   const L = (t, h, inner) => `<div style="text-align:left;margin-top:.8rem"><label style="font-weight:700;font-size:.92rem">${t}</label>${h ? '<div style="font-size:.78rem;color:var(--mut)">' + h + '</div>' : ''}<div style="margin-top:.3rem">${inner}</div></div>`;
 
   Swal.fire({
@@ -1639,22 +1710,23 @@ function editP(id) {
     title: id ? '✏️ แก้ไขสินค้า' : '➕ เพิ่มสินค้าใหม่',
     html: `<div style="max-height:62vh;overflow-y:auto;padding:0 .3rem">
       ${L('1) ชื่อสินค้า', 'เช่น เสื้อผ้าป่า, แก้วที่ระลึก', '<input id="pn" class="inp" value="' + p.name + '">')}
+      ${L('2) ประเภทสินค้า', 'เลือกจากรายการ หรือพิมพ์ประเภทใหม่ได้ (ใช้แยกในรายงานและแดชบอร์ด)', '<input id="pk" class="inp" list="catl" placeholder="เช่น เสื้อโปโล" value="' + (p.cat || '') + '"><datalist id="catl">' + [...new Set([...CAT_DEF, ...catList()])].map(c => '<option value="' + c + '">').join('') + '</datalist>')}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
-        ${L('2) สี', 'ใส่ - หากไม่มีตัวเลือกสี', '<input id="pc" class="inp" placeholder="เช่น ม่วง" value="' + p.color + '">')}
-        ${L('3) ราคาต่อชิ้น (บาท)', 'ตัวเลขเท่านั้น', '<input id="pr" type="number" min="0" class="inp" value="' + p.price + '">')}
+        ${L('3) สี', 'ใส่ - หากไม่มีตัวเลือกสี', '<input id="pc" class="inp" placeholder="เช่น ม่วง" value="' + p.color + '">')}
+        ${L('4) ราคาต่อชิ้น (บาท)', 'ตัวเลขเท่านั้น', '<input id="pr" type="number" min="0" class="inp" value="' + p.price + '">')}
       </div>
       <div style="display:grid;grid-template-columns:1fr 2fr;gap:.7rem">
-        ${L('4) ไอคอน Emoji', 'ใช้แทนรูปถ้าไม่อัปโหลด', '<input id="pe" class="inp" maxlength="4" value="' + (p.emoji || '🛍️') + '">')}
-        ${L('5) รูปภาพสินค้า', 'เลือกไฟล์ใหม่เพื่อเปลี่ยนรูป', '<div style="display:flex;gap:.6rem;align-items:center"><div id="pvb" style="width:52px;height:52px;flex:none;border-radius:14px;background:var(--bg);display:grid;place-items:center;font-size:1.6rem;overflow:hidden">' + (p.img ? '<img src="' + p.img + '" style="width:100%;height:100%;object-fit:cover">' : (p.emoji || '🛍️')) + '</div><input id="pi" type="file" accept="image/*" class="inp" onchange="fileURL(this.files[0]).then(u=>{if(u)document.getElementById(&quot;pvb&quot;).innerHTML=&quot;<img src=&apos;&quot;+u+&quot;&apos; style=&apos;width:100%;height:100%;object-fit:cover&apos;>&quot;})"></div>')}
+        ${L('5) ไอคอน Emoji', 'ใช้แทนรูปถ้าไม่อัปโหลด', '<input id="pe" class="inp" maxlength="4" value="' + (p.emoji || '🛍️') + '">')}
+        ${L('6) รูปภาพสินค้า', 'เลือกไฟล์ใหม่เพื่อเปลี่ยนรูป', '<div style="display:flex;gap:.6rem;align-items:center"><div id="pvb" style="width:52px;height:52px;flex:none;border-radius:14px;background:var(--bg);display:grid;place-items:center;font-size:1.6rem;overflow:hidden">' + (p.img ? '<img src="' + p.img + '" style="width:100%;height:100%;object-fit:cover">' : (p.emoji || '🛍️')) + '</div><input id="pi" type="file" accept="image/*" class="inp" onchange="fileURL(this.files[0]).then(u=>{if(u)document.getElementById(&quot;pvb&quot;).innerHTML=&quot;<img src=&apos;&quot;+u+&quot;&apos; style=&apos;width:100%;height:100%;object-fit:cover&apos;>&quot;})"></div>')}
       </div>
-      ${L('6) ไซซ์ & สต็อก', 'คงเหลือ = จำนวนทั้งหมด − จองแล้ว', '<div style="display:grid;grid-template-columns:1.2fr 1fr .9fr auto;gap:.5rem;font-size:.76rem;color:var(--mut);font-weight:600"><span>ชื่อไซซ์</span><span>จำนวนทั้งหมด</span><span>จองแล้ว</span><span>ลบ</span></div><div id="szr">' + Object.entries(p.sz).map(([k, z]) => szRow(k, z.n, z.s)).join('') + '</div><div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem"><button type="button" class="btn text-xs" onclick="addSz()">➕ เพิ่มไซซ์</button><button type="button" class="btn alt text-xs" onclick="addPre()">📏 เพิ่ม S M L XL 2XL</button><button type="button" class="btn alt text-xs" onclick="addSz(&quot;ฟรีไซซ์&quot;,50)">ฟรีไซซ์</button></div>')}
+      ${L('7) ไซซ์ & สต็อก', 'คงเหลือ = จำนวนทั้งหมด − จองแล้ว', '<div style="display:grid;grid-template-columns:1.2fr 1fr .9fr auto;gap:.5rem;font-size:.76rem;color:var(--mut);font-weight:600"><span>ชื่อไซซ์</span><span>จำนวนทั้งหมด</span><span>จองแล้ว</span><span>ลบ</span></div><div id="szr">' + Object.entries(p.sz).map(([k, z]) => szRow(k, z.n, z.s)).join('') + '</div><div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem"><button type="button" class="btn text-xs" onclick="addSz()">➕ เพิ่มไซซ์</button><button type="button" class="btn alt text-xs" onclick="addPre()">📏 เพิ่ม S M L XL 2XL</button><button type="button" class="btn alt text-xs" onclick="addSz(&quot;ฟรีไซซ์&quot;,50)">ฟรีไซซ์</button></div>')}
     </div>`,
     showCancelButton: true,
     confirmButtonColor: '#db0862',
     confirmButtonText: '💾 บันทึก',
     cancelButtonText: 'ยกเลิก',
     preConfirm: async () => {
-      const pn = $('#pn'), pc = $('#pc'), pr = $('#pr'), pe = $('#pe'), pi = $('#pi');
+      const pn = $('#pn'), pk = $('#pk'), pc = $('#pc'), pr = $('#pr'), pe = $('#pe'), pi = $('#pi');
       const n = pn.value.trim(), pr0 = +pr.value;
       const sz = [...document.querySelectorAll('#szr .szrow')].map(r => ({
         k: r.querySelector('.szk').value.trim(),
@@ -1667,13 +1739,13 @@ function editP(id) {
       if (!sz.length || sz.some(z => !z.k)) return bad('กรุณาเพิ่มไซซ์อย่างน้อย 1 รายการ');
       const lo = sz.find(z => z.n < z.s);
       if (lo) return bad('ไซซ์ ' + lo.k + ': จำนวนทั้งหมดต้องไม่น้อยกว่าที่จองแล้ว (' + lo.s + ')');
-      return { n, c: pc.value.trim(), p: pr0, e: pe.value.trim(), sz, i: await fileURL(pi.files[0]) };
+      return { n, k: pk.value.trim().slice(0, 40) || 'อื่นๆ', c: pc.value.trim(), p: pr0, e: pe.value.trim(), sz, i: await fileURL(pi.files[0]) };
     }
   }).then(async r => {
     if (!r.isConfirmed) return;
     const v = r.value, sz = {};
     v.sz.forEach(z => sz[z.k] = { n: z.n, s: z.s });
-    Object.assign(p, { name: v.n, color: v.c || '-', price: v.p, emoji: v.e || '🛍️', sz });
+    Object.assign(p, { name: v.n, cat: v.k, color: v.c || '-', price: v.p, emoji: v.e || '🛍️', sz });
     if (v.i) p.img = v.i;
     if (!id) {
       p.id = Date.now();
@@ -1755,7 +1827,7 @@ async function delN(id) {
   }
 }
 
-let RP = { p: 'all', d: new Date().toISOString().slice(0, 10), t: 'all' };
+let RP = { p: 'all', d: new Date().toISOString().slice(0, 10), t: 'all', c: 'all' };
 const PN = { all: 'ทั้งหมด', day: 'รายวัน', week: 'รายสัปดาห์', month: 'รายเดือน' };
 const KC = { 'บริจาค': '#db0862', 'สินค้า': '#FF8A65', 'โต๊ะ': '#26A69A' };
 const STT = { ok: 'ยืนยันแล้ว', wait: 'รอตรวจสอบ', no: 'ไม่ผ่าน' };
@@ -1783,9 +1855,42 @@ function rptRows() {
   const [a, b] = rng();
   return [
     ...S.don.map(x => ({ id: x.id, k: 'บริจาค', who: x.name, det: x.type, amt: x.amount, st: x.status, at: x.at })),
-    ...S.ord.map(x => ({ id: x.id, k: 'สินค้า', who: x.name, det: x.items.map(i => i.p + ' ' + i.s + '×' + i.q).join(', ') + (x.ship ? ' (+จัดส่ง)' : ''), amt: x.total, st: x.status, at: x.at })),
+    ...S.ord.map(x => {
+      const its = x.items.filter(i => RP.c == 'all' || catOf(i) == RP.c);
+      if (!its.length) return null;
+      const amt = RP.c == 'all' ? x.total : its.reduce((a, i) => a + (i.price || 0) * i.q, 0);
+      return { id: x.id, k: 'สินค้า', who: x.name, items: its, det: its.map(i => '[' + catOf(i) + '] ' + i.p + (i.c && i.c != '-' ? ' ' + i.c : '') + ' ไซซ์ ' + i.s + ' × ' + i.q).join('<br>') + (x.ship && RP.c == 'all' ? '<br>(+ค่าจัดส่ง)' : ''), amt, st: x.status, at: x.at };
+    }).filter(Boolean),
     ...S.tbl.map(x => ({ id: x.id, k: 'โต๊ะ', who: x.name, det: 'โต๊ะ ' + x.t + ' · ' + x.pax + ' คน', amt: x.total, st: x.status, at: x.at }))
   ].filter(r => r.at >= a && r.at < b && (RP.t == 'all' || r.k == RP.t)).sort((x, y) => y.at - x.at);
+}
+
+/* สรุปสินค้าแยกตามประเภท (ไม่นับรายการที่ไม่ผ่าน) */
+function prodSum(R) {
+  const m = {};
+  R.filter(r => r.k == 'สินค้า' && r.st != 'no').forEach(r => r.items.forEach(i => {
+    const c = catOf(i), g = m[c] = m[c] || { c, ok: 0, wait: 0, amt: 0, ln: {} };
+    const key = i.p + (i.c && i.c != '-' ? ' ' + i.c : '') + '|' + i.s;
+    const l = g.ln[key] = g.ln[key] || { n: i.p + (i.c && i.c != '-' ? ' ' + i.c : ''), s: i.s, ok: 0, wait: 0, amt: 0 };
+    const v = (i.price || 0) * i.q;
+    if (r.st == 'ok') { g.ok += i.q; l.ok += i.q; g.amt += v; l.amt += v; } else { g.wait += i.q; l.wait += i.q; }
+  }));
+  return Object.values(m).sort((a, b) => a.c.localeCompare(b.c, 'th')).map(g => ({ ...g, ln: Object.values(g.ln).sort((a, b) => a.n.localeCompare(b.n, 'th') || szSort(a.s, b.s)) }));
+}
+
+function prodSumHtml(R, pdfMode) {
+  const G = prodSum(R);
+  if (!G.length) return '';
+  const th = 'padding:6px 8px;text-align:' ;
+  const row = (cells, bg, bold) => '<tr style="background:' + bg + ';' + (bold ? 'font-weight:700' : '') + '">' + cells + '</tr>';
+  const tt = G.reduce((a, g) => ({ ok: a.ok + g.ok, wait: a.wait + g.wait, amt: a.amt + g.amt }), { ok: 0, wait: 0, amt: 0 });
+  const body = G.map(g => row(
+    '<td colspan="2" style="padding:6px 8px"><span style="background:' + catColor(g.c) + ';color:#fff;padding:1px 10px;border-radius:10px;font-size:12px">' + g.c + '</span> <b>รวมประเภทนี้</b></td><td style="text-align:right;padding:6px 8px">' + g.ok + '</td><td style="text-align:right;padding:6px 8px">' + g.wait + '</td><td style="text-align:right;padding:6px 8px">' + fm(g.amt) + '</td>',
+    pdfMode ? '#efe6f6' : 'color-mix(in srgb,' + catColor(g.c) + ' 14%,transparent)', true
+  ) + g.ln.map(l => row(
+    '<td style="padding:4px 8px 4px 24px">' + l.n + '</td><td style="padding:4px 8px">' + l.s + '</td><td style="text-align:right;padding:4px 8px">' + l.ok + '</td><td style="text-align:right;padding:4px 8px">' + l.wait + '</td><td style="text-align:right;padding:4px 8px">' + fm(l.amt) + '</td>', 'transparent', false)).join('')).join('');
+  return '<table class="w-full text-sm" style="width:100%;border-collapse:collapse"><thead><tr style="background:#4A2C6D;color:#fff"><th style="' + th + 'left">ประเภท / สินค้า</th><th style="' + th + 'left">ไซซ์</th><th style="' + th + 'right">ยืนยันแล้ว (ชิ้น)</th><th style="' + th + 'right">รอตรวจสอบ (ชิ้น)</th><th style="' + th + 'right">มูลค่าที่ยืนยัน (บาท)</th></tr></thead><tbody>' + body
+    + row('<td colspan="2" style="text-align:right;padding:6px 8px">รวมทุกประเภท</td><td style="text-align:right;padding:6px 8px">' + tt.ok + '</td><td style="text-align:right;padding:6px 8px">' + tt.wait + '</td><td style="text-align:right;padding:6px 8px">' + fm(tt.amt) + '</td>', 'rgba(219,8,98,.10)', true) + '</tbody></table>';
 }
 
 function rptLabel() {
@@ -1802,13 +1907,17 @@ function rptUI(m) {
       ${RP.p != 'all' ? `<input type="date" class="inp !w-auto text-xs" value="${RP.d}" onchange="RP.d=this.value||RP.d;rptUI($('#am'))">` : ''}
     </div>
     <div class="flex flex-wrap gap-2">
-      ${['all', 'บริจาค', 'สินค้า', 'โต๊ะ'].map(k => `<button class="badge !py-1.5 !px-3 cursor-pointer text-xs" style="background:${k == 'all' ? '#4A2C6D' : KC[k]};opacity:${RP.t == k ? 1 : .4}" onclick="RP.t='${k}';rptUI($('#am'))">${k == 'all' ? 'ทุกประเภท' : k}</button>`).join('')}
+      ${['all', 'บริจาค', 'สินค้า', 'โต๊ะ'].map(k => `<button class="badge !py-1.5 !px-3 cursor-pointer text-xs" style="background:${k == 'all' ? '#4A2C6D' : KC[k]};opacity:${RP.t == k ? 1 : .4}" onclick="RP.t='${k}';RP.c='all';rptUI($('#am'))">${k == 'all' ? 'ทุกประเภท' : k}</button>`).join('')}
     </div>
+    ${RP.t == 'สินค้า' ? `<div class="flex flex-wrap gap-2 items-center"><span class="text-xs" style="color:var(--mut)">ประเภทสินค้า:</span>
+      ${['all', ...catList()].map(c => `<button class="badge !py-1.5 !px-3 cursor-pointer text-xs" style="background:${c == 'all' ? '#4A2C6D' : catColor(c)};opacity:${RP.c == c ? 1 : .4}" onclick="RP.c='${c}';rptUI($('#am'))">${c == 'all' ? 'ทุกประเภทสินค้า' : c}</button>`).join('')}
+    </div>` : ''}
   </div>
   <div class="sh">📑 ตัวอย่างรายงาน · ${PN[RP.p]} · ${rptLabel()}</div>
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
     ${[['รายการทั้งหมด', R.length + ' รายการ', 'linear-gradient(135deg,#4A2C6D,#8a5cc4)'], ['ยืนยันแล้ว', fm(rsum(R, 'ok')) + ' บาท', 'linear-gradient(135deg,#26A69A,#AED581)'], ['รอตรวจสอบ', fm(rsum(R, 'wait')) + ' บาท', 'linear-gradient(135deg,#F57C00,#FFCA28)'], ['ไม่ผ่าน', R.filter(r => r.st == 'no').length + ' รายการ', 'linear-gradient(135deg,#D32F2F,#FF8A65)']].map(c => `<div class="rounded-3xl p-4 text-white" style="background:${c[2]};box-shadow:0 8px 20px rgba(0,0,0,.12)"><div class="text-xs opacity-90">${c[0]}</div><b class="text-lg">${c[1]}</b></div>`).join('')}
   </div>
+  ${prodSum(R).length ? `<div class="card p-4 mb-4"><div class="font-bold mb-2">📦 สรุปสินค้าแยกตามประเภท${RP.c != 'all' ? ' · ' + RP.c : ''}</div><div class="tw">${prodSumHtml(R, false)}</div></div>` : ''}
   <div class="card overflow-hidden">
     <div class="tw">
       <table class="w-full text-sm" style="min-width:720px">
@@ -1835,7 +1944,7 @@ function rptUI(m) {
 
 function rptPdf() {
   const R = rptRows();
-  pdf('รายงานผ้าป่าเพื่อการศึกษา', `<style>*{-webkit-print-color-adjust:exact;print-color-adjust:exact}th{background:#4A2C6D;color:#fff}tr:nth-child(even) td{background:#f6f0fa}.k{color:#fff;padding:1px 8px;border-radius:10px;font-size:12px}</style><h2>รายงานผ้าป่าเพื่อการศึกษา</h2><h3>โรงเรียนร่มเกล้าพิทยาสรรค์</h3><p style="text-align:center">${PN[RP.p]} · ${rptLabel()}${RP.t != 'all' ? ' · ' + RP.t : ''}</p><p>ยอดเงินที่ยืนยันแล้ว ${fm(rsum(R, 'ok'))} บาท · รอตรวจสอบ ${fm(rsum(R, 'wait'))} บาท · รวม ${R.length} รายการ</p><table><tr><th>วันที่</th><th>เลขที่</th><th>ประเภท</th><th>ผู้ทำรายการ</th><th>รายละเอียด</th><th>จำนวนเงิน</th><th>สถานะ</th></tr>${R.map(r => `<tr><td>${new Date(r.at).toLocaleDateString('th-TH')}</td><td>${r.id}</td><td><span class="k" style="background:${KC[r.k]}">${r.k}</span></td><td>${r.who}</td><td>${r.det}</td><td style="text-align:right">${fm(r.amt)}</td><td>${STT[r.st]}</td></tr>`).join('')}<tr><td colspan="5" style="text-align:right"><b>รวมที่ยืนยันแล้ว</b></td><td style="text-align:right"><b>${fm(rsum(R, 'ok'))}</b></td><td></td></tr></table>`);
+  pdf('รายงานผ้าป่าเพื่อการศึกษา', `<style>*{-webkit-print-color-adjust:exact;print-color-adjust:exact}th{background:#4A2C6D;color:#fff}tr:nth-child(even) td{background:#f6f0fa}.k{color:#fff;padding:1px 8px;border-radius:10px;font-size:12px}</style><h2>รายงานผ้าป่าเพื่อการศึกษา</h2><h3>โรงเรียนร่มเกล้าพิทยาสรรค์</h3><p style="text-align:center">${PN[RP.p]} · ${rptLabel()}${RP.t != 'all' ? ' · ' + RP.t : ''}${RP.c != 'all' ? ' · ' + RP.c : ''}</p><p>ยอดเงินที่ยืนยันแล้ว ${fm(rsum(R, 'ok'))} บาท · รอตรวจสอบ ${fm(rsum(R, 'wait'))} บาท · รวม ${R.length} รายการ</p>${prodSum(R).length ? '<h3 style="text-align:left">สรุปสินค้าแยกตามประเภท' + (RP.c != 'all' ? ' · ' + RP.c : '') + '</h3>' + prodSumHtml(R, true) + '<br>' : ''}<table><tr><th>วันที่</th><th>เลขที่</th><th>ประเภท</th><th>ผู้ทำรายการ</th><th>รายละเอียด</th><th>จำนวนเงิน</th><th>สถานะ</th></tr>${R.map(r => `<tr><td>${new Date(r.at).toLocaleDateString('th-TH')}</td><td>${r.id}</td><td><span class="k" style="background:${KC[r.k]}">${r.k}</span></td><td>${r.who}</td><td>${r.det}</td><td style="text-align:right">${fm(r.amt)}</td><td>${STT[r.st]}</td></tr>`).join('')}<tr><td colspan="5" style="text-align:right"><b>รวมที่ยืนยันแล้ว</b></td><td style="text-align:right"><b>${fm(rsum(R, 'ok'))}</b></td><td></td></tr></table>`);
 }
 
 function schUI(m) {
