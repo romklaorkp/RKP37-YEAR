@@ -6,7 +6,7 @@
  *   getPublic, adminLogin, adminLogout, adminGetAll,
  *   submitDonation, submitOrder, submitTable, searchItem,
  *   adminReview, adminGetSlip, adminSaveConfig, adminSaveProducts,
- *   adminSaveNews, adminSaveSchedule, adminSaveTables, adminResetAll
+ *   adminSaveNews, adminSaveSchedule, adminSaveTables, adminSetLabel, adminResetAll
  *
  * ฐานข้อมูล: Google Sheets (สร้างอัตโนมัติ)  |  ไฟล์รูป/สลิป: Google Drive
  * ตั้งค่าครั้งแรก: รันฟังก์ชัน setup() จาก Apps Script Editor หนึ่งครั้ง
@@ -62,8 +62,8 @@ const SCHEMA = {
   Config:    { h: ['key', 'value'], num: [], bool: [] },
   Donations: { h: ['id', 'at', 'name', 'phone', 'email', 'type', 'amount', 'show', 'wish', 'rc', 'slip', 'status', 'reason'], num: ['at', 'amount'], bool: ['show', 'rc'] },
   Orders:    { h: ['id', 'at', 'name', 'phone', 'method', 'addr', 'items', 'ship', 'total', 'slip', 'status', 'reason'], num: ['at', 'ship', 'total'], bool: [] },
-  Bookings:  { h: ['id', 'at', 't', 'name', 'org', 'phone', 'pax', 'note', 'total', 'slip', 'status', 'reason'], num: ['at', 'pax', 'total'], bool: [] },
-  Products:  { h: ['id', 'name', 'color', 'price', 'emoji', 'img', 'sz'], num: ['id', 'price'], bool: [] },
+  Bookings:  { h: ['id', 'at', 't', 'name', 'org', 'phone', 'pax', 'note', 'total', 'slip', 'status', 'reason', 'label'], num: ['at', 'pax', 'total'], bool: [] },
+  Products:  { h: ['id', 'name', 'color', 'price', 'emoji', 'img', 'sz', 'cat'], num: ['id', 'price'], bool: [] },
   News:      { h: ['id', 'at', 't', 'd', 'img'], num: ['id', 'at'], bool: [] },
   Schedule:  { h: ['id', 'd', 't', 'det', 'img'], num: ['id'], bool: [] }
 };
@@ -103,7 +103,7 @@ function rpcTable_() {
     submitDonation: submitDonation, submitOrder: submitOrder, submitTable: submitTable, searchItem: searchItem,
     adminReview: adminReview, adminGetSlip: adminGetSlip, adminSaveConfig: adminSaveConfig,
     adminSaveProducts: adminSaveProducts, adminSaveNews: adminSaveNews, adminSaveSchedule: adminSaveSchedule,
-    adminSaveTables: adminSaveTables, adminResetAll: adminResetAll
+    adminSaveTables: adminSaveTables, adminSetLabel: adminSetLabel, adminResetAll: adminResetAll
   };
 }
 
@@ -254,9 +254,27 @@ function initSheet_(ss, name) {
   return sh;
 }
 
+const _mig = {};
+/** เพิ่มคอลัมน์ใหม่ (ต่อท้าย) ให้ชีตเดิมที่สร้างจากเวอร์ชันก่อนหน้า */
+function migrate_(sh, name) {
+  if (_mig[name]) return;
+  _mig[name] = true;
+  const def = SCHEMA[name], have = sh.getLastColumn();
+  if (have >= def.h.length) return;
+  if (sh.getMaxColumns() < def.h.length) sh.insertColumnsAfter(sh.getMaxColumns(), def.h.length - sh.getMaxColumns());
+  sh.getRange(1, have + 1, 1, def.h.length - have).setValues([def.h.slice(have)]).setFontWeight('bold').setBackground('#efe6f6');
+  for (let i = have; i < def.h.length; i++) {
+    const k = def.h[i];
+    if (def.num.indexOf(k) < 0 && def.bool.indexOf(k) < 0) sh.getRange(1, i + 1, sh.getMaxRows(), 1).setNumberFormat('@');
+  }
+}
+
 function sh_(name) {
   const ss = ss_();
-  return ss.getSheetByName(name) || initSheet_(ss, name);
+  const sh = ss.getSheetByName(name);
+  if (!sh) return initSheet_(ss, name);
+  migrate_(sh, name);
+  return sh;
 }
 
 function ensureRows_(sh, n) {
@@ -533,10 +551,10 @@ function prodFrom_(r) {
   Object.keys(sz).forEach(function (k) {
     sz[k] = { n: Number(sz[k].n) || 0, s: Number(sz[k].s) || 0 };
   });
-  return { id: r.id, name: r.name, color: r.color || '-', price: r.price, emoji: r.emoji || '🛍️', img: r.img || '', sz: sz };
+  return { id: r.id, name: r.name, color: r.color || '-', price: r.price, emoji: r.emoji || '🛍️', img: r.img || '', sz: sz, cat: r.cat || 'อื่นๆ' };
 }
 function prodTo_(p) {
-  return { id: p.id, name: p.name, color: p.color, price: p.price, emoji: p.emoji, img: p.img, sz: JSON.stringify(p.sz) };
+  return { id: p.id, name: p.name, color: p.color, price: p.price, emoji: p.emoji, img: p.img, sz: JSON.stringify(p.sz), cat: p.cat };
 }
 function getProducts_() { return rows_('Products').map(prodFrom_); }
 
@@ -653,8 +671,9 @@ function buildPublic_() {
     .map(function (x) {
       return { id: x.id, at: x.at, name: x.show ? x.name : '', type: x.type, amount: x.amount, show: x.show, status: x.status };
     });
+  // แสดงชื่อ/ป้ายกำกับบนผังโต๊ะ เฉพาะรายการที่ Admin อนุมัติแล้ว
   d.tbl = tbls.filter(function (x) { return x.status !== 'no'; })
-    .map(function (x) { return { t: x.t, status: x.status }; });
+    .map(function (x) { return { t: x.t, status: x.status, label: x.status === 'ok' ? (x.label || x.name) : '' }; });
   return d;
 }
 
@@ -762,7 +781,7 @@ function submitOrder(p) {
         z.s += it.q;
         sub += f.p.price * it.q;
         touched[f.row] = f;
-        enriched.push({ id: it.id, p: f.p.name, c: f.p.color, s: it.s, q: it.q, price: f.p.price });
+        enriched.push({ id: it.id, p: f.p.name, c: f.p.color, k: f.p.cat, s: it.s, q: it.q, price: f.p.price });
       });
       const ship = method === 'จัดส่ง' ? APP.SHIP_FEE : 0;
       total = sub + ship;
@@ -1011,6 +1030,23 @@ function adminSaveTables(tk, c) {
   });
 }
 
+/** Admin เขียนป้ายกำกับบนผังโต๊ะ (เว้นว่าง = ใช้ชื่อผู้จอง) */
+function adminSetLabel(tk, id, label) {
+  return run_(function () {
+    auth_(tk);
+    id = String(id || '').trim().toUpperCase();
+    if (!/^TBL-/.test(id)) fail_('ไม่พบรายการจองโต๊ะ');
+    const text = h_(label, 60);
+    locked_(function () {
+      const row = findRow_('Bookings', id);
+      if (!row) fail_('ไม่พบรายการจองโต๊ะ');
+      setCell_('Bookings', row, 'label', text);
+    });
+    bust_();
+    return { ok: true };
+  });
+}
+
 function adminSaveProducts(tk, list) {
   return run_(function () {
     auth_(tk);
@@ -1052,7 +1088,8 @@ function adminSaveProducts(tk, list) {
         newImgs.push(img);
         out.push({
           id: id, name: name, color: h_(x.color, 40) || '-', price: price,
-          emoji: h_(x.emoji, 8) || '🛍️', img: img, sz: JSON.stringify(sz)
+          emoji: h_(x.emoji, 8) || '🛍️', img: img, sz: JSON.stringify(sz),
+          cat: h_(x.cat, 40) || 'อื่นๆ'
         });
       });
       replaceAll_('Products', out);
